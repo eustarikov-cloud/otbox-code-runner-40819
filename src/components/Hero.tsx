@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import heroOffice from "@/assets/hero-office.jpg";
-import heroSalon from "@/assets/hero-salon-split.jpg";
+import heroImage from "@/assets/hero-office.jpg";
 
 export const Hero = () => {
   const scrollToSection = (id: string) => {
@@ -11,25 +10,12 @@ export const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Офис - левая диагональ */}
       <div 
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${heroOffice})`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${heroImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          clipPath: 'polygon(0 0, 60% 0, 40% 100%, 0 100%)',
-        }}
-      />
-      
-      {/* Салон красоты - правая диагональ */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${heroSalon})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          clipPath: 'polygon(60% 0, 100% 0, 100% 100%, 40% 100%)',
         }}
       />
       
