@@ -9,10 +9,12 @@ import { OrderForm } from "@/components/OrderForm";
 import { FAQ } from "@/components/FAQ";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
+import { StructuredData } from "@/components/StructuredData";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <StructuredData />
       <Header />
       <Hero />
       <Features />

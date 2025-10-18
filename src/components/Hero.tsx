@@ -12,6 +12,8 @@ export const Hero = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div 
         className="absolute inset-0 z-0"
+        role="img"
+        aria-label="Современный офис с профессиональной атмосферой"
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${heroImage})`,
           backgroundSize: 'cover',

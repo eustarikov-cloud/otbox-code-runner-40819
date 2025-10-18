@@ -77,9 +77,9 @@ ${description}
   };
 
   return (
-    <section id="samples" className="py-20">
+    <section id="samples" className="py-20" aria-labelledby="samples-heading">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12">Что входит в комплект</h2>
+        <h2 id="samples-heading" className="text-4xl font-bold text-center mb-12">Что входит в комплект</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {samples.map((sample) => (

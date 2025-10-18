@@ -22,7 +22,8 @@ export const CTA = () => {
       {/* Кнопка — действие + польза */}
       <Button 
         onClick={scrollToCatalog}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-base"
+        variant="gradient"
+        size="lg"
       >
         Посмотреть комплекты документов
       </Button>
