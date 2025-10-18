@@ -46,6 +46,36 @@ const samples = [
 ];
 
 export const Samples = () => {
+  const handleDownload = (title: string, description: string) => {
+    // Создаем демо-контент для файла
+    const demoContent = `ДЕМО-ДОКУМЕНТ: ${title}
+
+${description}
+
+Это образец документа из комплекта по охране труда.
+В полном комплекте вы получите:
+- Готовый шаблон документа
+- Инструкцию по заполнению
+- Все необходимые приложения
+
+Для получения полного комплекта документов перейдите на наш сайт.
+
+---
+Документ создан в соответствии с требованиями ТК РФ
+Актуально на 2025 год`;
+
+    // Создаем blob и инициируем загрузку
+    const blob = new Blob([demoContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `demo-${title.toLowerCase().replace(/\s+/g, '-')}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <section id="samples" className="py-20">
       <div className="container mx-auto px-4">
@@ -55,12 +85,17 @@ export const Samples = () => {
           {samples.map((sample) => (
             <Card
               key={sample.title}
-              className="p-6 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+              className="p-6 hover:shadow-xl transition-all duration-300 group"
             >
               <div className="text-4xl mb-4">{sample.icon}</div>
               <h3 className="text-lg font-bold mb-2">{sample.title}</h3>
               <p className="text-sm text-muted-foreground mb-4">{sample.description}</p>
-              <Button variant="ghost" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                onClick={() => handleDownload(sample.title, sample.description)}
+              >
                 <Download className="w-4 h-4 mr-2" />
                 Скачать демо
               </Button>
