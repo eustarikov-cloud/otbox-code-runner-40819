@@ -1,29 +1,27 @@
-import { FileText, Scale, Zap, Shield } from "lucide-react";
-
 const features = [
   {
-    icon: FileText,
+    emoji: "📄",
     title: "Готовые шаблоны",
     description: "Редактируемые форматы Word, Excel, PDF",
-    color: "bg-primary",
+    color: "bg-[#9b87f5]",
   },
   {
-    icon: Scale,
+    emoji: "⚖️",
     title: "Законность",
     description: "Соответствие ТК РФ и актам Минтруда",
-    color: "bg-accent",
+    color: "bg-[#0EA5E9]",
   },
   {
-    icon: Zap,
+    emoji: "⚡",
     title: "Быстро",
     description: "Доставка на email за 5 минут после оплаты",
-    color: "bg-primary",
+    color: "bg-[#10B981]",
   },
   {
-    icon: Shield,
+    emoji: "🛡️",
     title: "Гарантия",
     description: "Проверено надзорными органами",
-    color: "bg-accent",
+    color: "bg-[#F59E0B]",
   },
 ];
 
@@ -34,14 +32,13 @@ export const Features = () => {
         <h2 className="sr-only">Преимущества наших документов</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature) => {
-            const Icon = feature.icon;
             return (
               <div
                 key={feature.title}
                 className="text-center group hover:transform hover:scale-105 transition-all duration-300"
               >
                 <div className={`w-16 h-16 ${feature.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-shadow`}>
-                  <Icon className="w-8 h-8 text-white" aria-hidden="true" />
+                  <span className="text-3xl" aria-hidden="true">{feature.emoji}</span>
                 </div>
                 <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
                 <p className="text-muted-foreground">{feature.description}</p>
