@@ -39,7 +39,7 @@ export const Hero = () => {
           <Button onClick={() => scrollToSection('catalog')} size="lg" variant="gradient" className="text-lg px-8 py-6">
             Выбрать комплект
           </Button>
-          <Button onClick={() => scrollToSection('samples')} size="lg" variant="outline" className="text-lg px-8 py-6 bg-white/10 hover:bg-white border-white text-white">
+          <Button onClick={() => scrollToSection('samples')} size="lg" variant="outline" className="text-lg px-8 py-6 bg-white/10 hover:bg-white hover:text-black border-white text-white">
             Скачать образец
           </Button>
         </div>
