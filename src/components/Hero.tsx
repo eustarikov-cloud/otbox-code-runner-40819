@@ -36,7 +36,7 @@ export const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <Button onClick={() => scrollToSection('catalog')} size="lg" variant="gradient" className="text-lg px-8 py-6 hover:bg-[#9b87f5] hover:shadow-[0_0_30px_rgba(155,135,245,0.8)] transition-all duration-300 active:bg-[#8b77e5]">
+          <Button onClick={() => scrollToSection('catalog')} size="lg" variant="gradient" className="text-lg px-8 py-6 hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]">
             Выбрать комплект
           </Button>
           <Button onClick={() => scrollToSection('samples')} size="lg" variant="outline" className="text-lg px-8 py-6 bg-white/10 hover:bg-white hover:text-black border-white text-white">

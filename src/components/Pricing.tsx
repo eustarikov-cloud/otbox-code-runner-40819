@@ -94,7 +94,7 @@ export const Pricing = () => {
                   ))}
                 </ul>
 
-                <Button onClick={scrollToOrder} className="w-full hover:bg-[#9b87f5] hover:shadow-[0_0_30px_rgba(155,135,245,0.8)] transition-all duration-300 active:bg-[#8b77e5]" variant="gradient" size="lg">
+                <Button onClick={scrollToOrder} className="w-full hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" variant="gradient" size="lg">
                   Заказать →
                 </Button>
               </Card>
