@@ -28,7 +28,7 @@ export const Header = () => {
           </button>
         </nav>
 
-        <Button onClick={() => scrollToSection('order')} variant="gradient" size="lg">
+        <Button onClick={() => scrollToSection('order')} variant="gradient" size="lg" className="hover:bg-[#9b87f5] hover:shadow-[0_0_30px_rgba(155,135,245,0.8)] transition-all duration-300 active:bg-[#8b77e5]">
           Заказать
         </Button>
       </div>
