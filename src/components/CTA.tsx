@@ -24,6 +24,7 @@ export const CTA = () => {
         onClick={scrollToCatalog}
         variant="gradient"
         size="lg"
+        className="hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]"
       >
         Посмотреть комплекты документов
       </Button>

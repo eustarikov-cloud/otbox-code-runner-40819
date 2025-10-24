@@ -184,7 +184,7 @@ export const OrderForm = () => {
               {errors.comment && <p className="text-sm text-destructive">{errors.comment}</p>}
             </div>
 
-            <Button type="submit" size="lg" variant="gradient" className="w-full">
+            <Button type="submit" size="lg" variant="gradient" className="w-full hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]">
               Отправить заявку →
             </Button>
 
