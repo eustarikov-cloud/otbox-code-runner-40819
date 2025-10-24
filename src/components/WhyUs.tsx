@@ -28,13 +28,13 @@ export const WhyUs = () => {
           {reasons.map((reason, index) => (
             <Card
               key={index}
-              className="p-6 hover:shadow-xl transition-shadow duration-300 bg-white/95 backdrop-blur-md border-white/20"
+              className="p-6 hover:shadow-xl transition-shadow duration-300 bg-white/15 backdrop-blur-md border-white/30"
             >
               <div className="flex items-start gap-4">
                 <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold flex-shrink-0">
                   {index + 1}
                 </div>
-                <p className="text-lg text-foreground">{reason}</p>
+                <p className="text-lg text-white font-medium">{reason}</p>
               </div>
             </Card>
           ))}
