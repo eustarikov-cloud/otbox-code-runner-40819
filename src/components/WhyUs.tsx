@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import heroSalonImage from "@/assets/hero-salon-split.jpg";
+import heroSalonImage from "@/assets/barber-tools-workspace.jpg";
 
 const reasons = [
   "Узкая специализация — только офисы и салоны",
