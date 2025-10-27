@@ -85,15 +85,15 @@ ${description}
           {samples.map((sample) => (
             <Card
               key={sample.title}
-              className="p-6 hover:shadow-xl transition-all duration-300 group"
+              className="p-6 hover:shadow-xl transition-all duration-300 group flex flex-col h-full"
             >
               <div className="text-4xl mb-4">{sample.icon}</div>
               <h3 className="text-lg font-bold mb-2">{sample.title}</h3>
-              <p className="text-sm text-muted-foreground mb-4">{sample.description}</p>
+              <p className="text-sm text-muted-foreground mb-4 flex-grow">{sample.description}</p>
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors mt-auto"
                 onClick={() => handleDownload(sample.title, sample.description)}
               >
                 <Download className="w-4 h-4 mr-2" />
