@@ -63,7 +63,7 @@ export const StructuredData = () => {
           "name": "В каком формате документы?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "DOCX, XLSX, PDF. Совместимы с Microsoft Office, LibreOffice, Google Docs. Редактируются даже с телефона."
+            "text": "DOCX. Совместимы с Microsoft Office, LibreOffice, Google Docs. Редактируются даже с телефона."
           }
         }
       ]

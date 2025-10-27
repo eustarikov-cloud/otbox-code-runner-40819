@@ -2,7 +2,7 @@ const features = [
   {
     emoji: "📄",
     title: "Готовые шаблоны",
-    description: "Редактируемые форматы Word, Excel, PDF",
+    description: "Редактируемые форматы Word",
     color: "bg-[#9b87f5]",
   },
   {

@@ -24,7 +24,7 @@ const faqs = [
   },
   {
     question: "В каком формате?",
-    answer: "DOCX, XLSX, PDF. Совместимы с Microsoft Office, LibreOffice, Google Docs. Редактируются даже с телефона.",
+    answer: "DOCX. Совместимы с Microsoft Office, LibreOffice, Google Docs. Редактируются даже с телефона.",
   },
   {
     question: "Можно посмотреть образец?",
