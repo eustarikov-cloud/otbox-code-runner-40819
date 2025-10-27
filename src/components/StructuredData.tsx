@@ -81,7 +81,7 @@ export const StructuredData = () => {
       },
       "offers": {
         "@type": "Offer",
-        "price": "14900",
+        "price": "3500",
         "priceCurrency": "RUB",
         "availability": "https://schema.org/InStock",
         "seller": {
@@ -103,7 +103,7 @@ export const StructuredData = () => {
       },
       "offers": {
         "@type": "Offer",
-        "price": "17900",
+        "price": "3900",
         "priceCurrency": "RUB",
         "availability": "https://schema.org/InStock",
         "seller": {

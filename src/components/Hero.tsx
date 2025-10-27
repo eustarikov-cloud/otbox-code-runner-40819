@@ -9,7 +9,7 @@ export const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" aria-labelledby="hero-heading">
       <div 
         className="absolute inset-0 z-0"
         role="img"
@@ -26,7 +26,7 @@ export const Hero = () => {
           ✨ Актуально на 2025 год — соответствие ТК РФ
         </Badge>
         
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+        <h1 id="hero-heading" className="text-4xl md:text-6xl font-bold mb-6 text-white">
           Документы по охране труда<br />
           для офисов и салонов красоты
         </h1>
@@ -36,10 +36,10 @@ export const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <Button onClick={() => scrollToSection('catalog')} size="lg" variant="gradient" className="text-lg px-8 py-6 hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]">
+          <Button onClick={() => scrollToSection('catalog')} size="lg" variant="gradient" className="text-lg px-8 py-6 hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" aria-label="Перейти к каталогу комплектов">
             Выбрать комплект
           </Button>
-          <Button onClick={() => scrollToSection('samples')} size="lg" variant="outline" className="text-lg px-8 py-6 bg-white/10 hover:bg-white hover:text-black border-white text-white">
+          <Button onClick={() => scrollToSection('samples')} size="lg" variant="outline" className="text-lg px-8 py-6 bg-white/10 hover:bg-white hover:text-black border-white text-white" aria-label="Перейти к образцам документов">
             Скачать образец
           </Button>
         </div>

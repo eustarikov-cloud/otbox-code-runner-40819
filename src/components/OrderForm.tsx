@@ -53,7 +53,6 @@ export const OrderForm = () => {
       const validatedData = orderFormSchema.parse(formData);
       
       // TODO: После настройки backend - отправка данных на сервер
-      console.log("Validated order data:", validatedData);
       
       toast({
         title: "Заявка отправлена!",
