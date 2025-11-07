@@ -61,7 +61,7 @@ export const Footer = () => {
           <div className="text-sm text-muted-foreground">
             © 2025 OT-Box. Все права защищены.
           </div>
-          <div className="text-xs text-muted-foreground">ИНН: 471303641804ИНН: [будет добавлен после регистрации] | ОГРН: [будет добавлен]</div>
+          <div className="text-xs text-muted-foreground">ИНН: 471303641804</div>
         </div>
       </div>
     </footer>;
