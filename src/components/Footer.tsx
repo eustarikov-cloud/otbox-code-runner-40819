@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
-
 export const Footer = () => {
-  return (
-    <footer className="py-12 border-t border-border bg-secondary/30">
+  return <footer className="py-12 border-t border-border bg-secondary/30">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
@@ -63,11 +61,8 @@ export const Footer = () => {
           <div className="text-sm text-muted-foreground">
             © 2025 OT-Box. Все права защищены.
           </div>
-          <div className="text-xs text-muted-foreground">
-            ИНН: [будет добавлен после регистрации] | ОГРН: [будет добавлен]
-          </div>
+          <div className="text-xs text-muted-foreground">ИНН: 471303641804ИНН: [будет добавлен после регистрации] | ОГРН: [будет добавлен]</div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
