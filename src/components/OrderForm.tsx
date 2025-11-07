@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { z } from "zod";
+import { supabase } from "@/integrations/supabase/client";
 
 const orderFormSchema = z.object({
   name: z.string()
@@ -45,14 +46,32 @@ export const OrderForm = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
     
     try {
       const validatedData = orderFormSchema.parse(formData);
       
-      // TODO: После настройки backend - отправка данных на сервер
+      // Get payment amount based on package
+      const paymentAmount = validatedData.package === 'office' ? 3500 : 3900;
+      
+      // Save order to database
+      const { error: insertError } = await supabase
+        .from('orders')
+        .insert({
+          name: validatedData.name,
+          email: validatedData.email,
+          phone: validatedData.phone || null,
+          package: validatedData.package,
+          comment: validatedData.comment || null,
+          payment_amount: paymentAmount,
+          user_id: null, // anonymous order
+        });
+
+      if (insertError) {
+        throw insertError;
+      }
       
       toast({
         title: "Заявка отправлена!",
@@ -79,6 +98,12 @@ export const OrderForm = () => {
         toast({
           title: "Ошибка валидации",
           description: "Пожалуйста, проверьте правильность заполнения полей",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Ошибка",
+          description: "Не удалось отправить заявку. Попробуйте позже.",
           variant: "destructive",
         });
       }
