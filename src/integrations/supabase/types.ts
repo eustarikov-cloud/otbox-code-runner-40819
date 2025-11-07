@@ -28,6 +28,7 @@ export type Database = {
           status: string
           stripe_payment_intent_id: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           comment?: string | null
@@ -42,6 +43,7 @@ export type Database = {
           status?: string
           stripe_payment_intent_id?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           comment?: string | null
@@ -56,6 +58,7 @@ export type Database = {
           status?: string
           stripe_payment_intent_id?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
