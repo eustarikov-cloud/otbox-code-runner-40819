@@ -22,6 +22,7 @@ export type Database = {
           id: string
           name: string
           package: string
+          package_price: number
           payment_amount: number | null
           payment_status: string
           phone: string
@@ -36,7 +37,8 @@ export type Database = {
           email: string
           id?: string
           name: string
-          package: string
+          package?: string
+          package_price?: number
           payment_amount?: number | null
           payment_status?: string
           phone: string
@@ -52,6 +54,7 @@ export type Database = {
           id?: string
           name?: string
           package?: string
+          package_price?: number
           payment_amount?: number | null
           payment_status?: string
           phone?: string
@@ -59,6 +62,33 @@ export type Database = {
           stripe_payment_intent_id?: string | null
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
         }
         Relationships: []
       }

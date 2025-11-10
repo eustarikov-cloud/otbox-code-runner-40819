@@ -12,6 +12,7 @@ const packages = [
     oldPrice: "7 000 ₽",
     discount: "-50%",
     badge: "Хит продаж",
+    packageType: "office",
     features: [
       "Инструкции по профессиям",
       "СУОТ, политика, приказы",
@@ -27,6 +28,7 @@ const packages = [
     price: "3 900 ₽",
     oldPrice: "7 800 ₽",
     discount: "-50%",
+    packageType: "salon",
     features: [
       "Инструкции по видам услуг",
       "Журналы, приказы, СИЗ",

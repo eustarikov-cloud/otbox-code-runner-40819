@@ -1,9 +1,38 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 export const Header = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleAuthClick = () => {
+    if (user) {
+      supabase.auth.signOut();
+    } else {
+      navigate('/auth');
+    }
   };
 
   return (
@@ -28,9 +57,14 @@ export const Header = () => {
           </button>
         </nav>
 
-        <Button onClick={() => scrollToSection('order')} variant="gradient" size="lg" className="hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]">
-          Заказать
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button onClick={() => scrollToSection('order')} variant="gradient" size="lg">
+            Заказать
+          </Button>
+          <Button onClick={handleAuthClick} variant="outline" size="lg">
+            {user ? "Выйти" : "Войти"}
+          </Button>
+        </div>
       </div>
     </header>
   );
