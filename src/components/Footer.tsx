@@ -42,6 +42,9 @@ export const Footer = () => {
               <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Политика конфиденциальности
               </Link>
+              <Link to="/personal-data-consent" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                Согласие на обработку данных
+              </Link>
               <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Договор оферты
               </Link>

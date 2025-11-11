@@ -1,23 +1,25 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { User } from "@supabase/supabase-js";
-import { Building2, Sparkles, UserCheck, Zap } from "lucide-react";
+import { Building2, Sparkles } from "lucide-react";
 
 const orderFormSchema = z.object({
-  name: z.string().min(2, { message: "Имя должно быть минимум 2 символа" }).max(100, { message: "Имя не должно превышать 100 символов" }),
+  name: z.string().max(100, { message: "Имя не должно превышать 100 символов" }).optional(),
   email: z.string().email({ message: "Некорректный email адрес" }).max(255, { message: "Email не должен превышать 255 символов" }),
-  phone: z.string().min(10, { message: "Телефон должен быть минимум 10 символов" }).max(20, { message: "Телефон не должен превышать 20 символов" }).regex(/^[\d\s\+\-\(\)]+$/, { message: "Телефон должен содержать только цифры и символы" }),
+  phone: z.string().max(20, { message: "Телефон не должен превышать 20 символов" }).regex(/^[\d\s\+\-\(\)]*$/, { message: "Телефон должен содержать только цифры и символы" }).optional(),
   package: z.enum(["office", "salon"], { message: "Выберите пакет" }),
   comment: z.string().max(1000, { message: "Комментарий не должен превышать 1000 символов" }).optional(),
+  consentGiven: z.boolean().refine((val) => val === true, { message: "Необходимо согласие на обработку персональных данных" }),
 });
 
 type OrderFormData = z.infer<typeof orderFormSchema>;
@@ -30,11 +32,11 @@ export const OrderForm = () => {
     phone: "",
     package: "office",
     comment: "",
+    consentGiven: false,
   });
   const [errors, setErrors] = useState<Partial<Record<keyof OrderFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Get current user
@@ -57,11 +59,7 @@ export const OrderForm = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleOrderWithAuth = () => {
-    navigate('/auth');
-  };
-
-  const handleQuickOrder = async (e: React.FormEvent) => {
+  const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrors({});
@@ -77,9 +75,9 @@ export const OrderForm = () => {
       const { error: insertError } = await supabase
         .from("orders")
         .insert({
-          name: validatedData.name,
+          name: validatedData.name || "Не указано",
           email: validatedData.email,
-          phone: validatedData.phone,
+          phone: validatedData.phone || "Не указан",
           package: validatedData.package,
           comment: validatedData.comment || null,
           payment_amount: paymentAmount,
@@ -138,73 +136,20 @@ export const OrderForm = () => {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Оформить заказ</h2>
           <p className="text-xl text-muted-foreground">
-            Выберите удобный способ оформления
+            Заполните форму для быстрой покупки
           </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto mb-12">
-          {/* Quick Order Option */}
-          <Card className="border-2 hover:border-primary/50 transition-all">
-            <CardHeader>
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center mb-4">
-                <Zap className="w-6 h-6 text-primary-foreground" />
-              </div>
-              <CardTitle>Быстрая покупка</CardTitle>
-              <CardDescription>
-                Без регистрации - просто укажите email для получения файлов
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>✓ Оформление за 2 минуты</li>
-                <li>✓ Файлы придут на email после оплаты</li>
-                <li>✓ Не нужно запоминать пароль</li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Order with Registration */}
-          <Card className="border-2 hover:border-primary/50 transition-all">
-            <CardHeader>
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center mb-4">
-                <UserCheck className="w-6 h-6 text-primary-foreground" />
-              </div>
-              <CardTitle>С регистрацией</CardTitle>
-              <CardDescription>
-                Создайте аккаунт для доступа к личному кабинету
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm text-muted-foreground mb-4">
-                <li>✓ История всех покупок</li>
-                <li>✓ Повторное скачивание файлов</li>
-                <li>✓ Персональные предложения</li>
-              </ul>
-              {!user && (
-                <Button onClick={handleOrderWithAuth} variant="outline" className="w-full">
-                  Войти или зарегистрироваться
-                </Button>
-              )}
-              {user && (
-                <div className="p-3 bg-primary/10 rounded-lg">
-                  <p className="text-sm font-medium">Вы вошли как:</p>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
         </div>
 
         {/* Order Form */}
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
-            <CardTitle>Данные для заказа</CardTitle>
+            <CardTitle>Быстрая покупка</CardTitle>
             <CardDescription>
-              Заполните форму для оформления покупки
+              Укажите email для получения файлов после оплаты. Имя и телефон необязательны.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleQuickOrder} className="space-y-6">
+            <form onSubmit={handleSubmitOrder} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="package">Выберите пакет *</Label>
                 <Select
@@ -233,20 +178,6 @@ export const OrderForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="name">Имя *</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Иван Иванов"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className={errors.name ? "border-destructive" : ""}
-                  disabled={user !== null}
-                />
-                {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="email">Email *</Label>
                 <Input
                   id="email"
@@ -262,7 +193,21 @@ export const OrderForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Телефон *</Label>
+                <Label htmlFor="name">Имя (необязательно)</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Иван Иванов"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className={errors.name ? "border-destructive" : ""}
+                  disabled={user !== null}
+                />
+                {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone">Телефон (необязательно)</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -285,6 +230,33 @@ export const OrderForm = () => {
                   rows={4}
                 />
                 {errors.comment && <p className="text-sm text-destructive">{errors.comment}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="consent"
+                    checked={formData.consentGiven}
+                    onCheckedChange={(checked) => setFormData({ ...formData, consentGiven: checked === true })}
+                    className={errors.consentGiven ? "border-destructive" : ""}
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="consent" className="text-sm font-normal cursor-pointer">
+                      Я соглашаюсь на{" "}
+                      <Link 
+                        to="/personal-data-consent" 
+                        className="text-primary hover:underline"
+                        target="_blank"
+                      >
+                        обработку персональных данных
+                      </Link>
+                      {" "}*
+                    </Label>
+                    {errors.consentGiven && (
+                      <p className="text-sm text-destructive mt-1">{errors.consentGiven}</p>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="pt-4 border-t">

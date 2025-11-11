@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Privacy from "./pages/Privacy";
+import PersonalDataConsent from "./pages/PersonalDataConsent";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/personal-data-consent" element={<PersonalDataConsent />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
