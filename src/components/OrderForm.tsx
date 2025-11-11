@@ -130,156 +130,241 @@ export const OrderForm = () => {
     }
   };
 
+  const [orderType, setOrderType] = useState<"quick" | "with-registration" | null>(null);
+
   return (
     <section id="order" className="py-20 bg-secondary/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Оформить заказ</h2>
           <p className="text-xl text-muted-foreground">
-            Заполните форму для быстрой покупки
+            Выберите способ оформления заказа
           </p>
         </div>
 
-        {/* Order Form */}
-        <Card className="max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle>Быстрая покупка</CardTitle>
-            <CardDescription>
-              Укажите email для получения файлов после оплаты. Имя и телефон необязательны.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmitOrder} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="package">Выберите пакет *</Label>
-                <Select
-                  value={formData.package}
-                  onValueChange={(value: "office" | "salon") => setFormData({ ...formData, package: value })}
-                >
-                  <SelectTrigger className={errors.package ? "border-destructive" : ""}>
-                    <SelectValue placeholder="Выберите пакет" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="office">
-                      <div className="flex items-center gap-2">
-                        <Building2 className="w-4 h-4" />
-                        <span>Офис - 3 500 ₽</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="salon">
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4" />
-                        <span>Салон красоты - 3 900 ₽</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.package && <p className="text-sm text-destructive">{errors.package}</p>}
-              </div>
+        {!orderType ? (
+          /* Order Type Selection */
+          <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+            <Card className="cursor-pointer hover:border-primary transition-colors" onClick={() => setOrderType("with-registration")}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="w-5 h-5" />
+                  Оформить заказ
+                </CardTitle>
+                <CardDescription>
+                  С регистрацией личного кабинета
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>✓ Доступ к личному кабинету</li>
+                  <li>✓ История заказов</li>
+                  <li>✓ Управление данными</li>
+                </ul>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Email *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your@email.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className={errors.email ? "border-destructive" : ""}
-                  disabled={user !== null}
-                />
-                {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-                <p className="text-xs text-muted-foreground">На этот email придут файлы после оплаты</p>
-              </div>
+            <Card className="cursor-pointer hover:border-primary transition-colors" onClick={() => setOrderType("quick")}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  Быстрый заказ
+                </CardTitle>
+                <CardDescription>
+                  Покупка в один клик
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>✓ Без регистрации</li>
+                  <li>✓ Только email</li>
+                  <li>✓ Мгновенная оплата</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        ) : orderType === "with-registration" && !user ? (
+          /* Registration Required */
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle>Требуется регистрация</CardTitle>
+              <CardDescription>
+                Для оформления заказа с личным кабинетом необходимо войти или зарегистрироваться
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button asChild variant="gradient" size="lg" className="w-full">
+                <Link to="/auth">Войти или зарегистрироваться</Link>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="w-full"
+                onClick={() => setOrderType(null)}
+              >
+                Назад к выбору
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          /* Order Form */
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle>
+                {orderType === "quick" ? "Быстрая покупка" : "Оформление заказа"}
+              </CardTitle>
+              <CardDescription>
+                {orderType === "quick" 
+                  ? "Укажите email для получения файлов после оплаты. Имя и телефон необязательны."
+                  : "Заполните данные для оформления заказа"
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmitOrder} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="package">Выберите пакет *</Label>
+                  <Select
+                    value={formData.package}
+                    onValueChange={(value: "office" | "salon") => setFormData({ ...formData, package: value })}
+                  >
+                    <SelectTrigger className={errors.package ? "border-destructive" : ""}>
+                      <SelectValue placeholder="Выберите пакет" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="office">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="w-4 h-4" />
+                          <span>Офис - 3 500 ₽</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="salon">
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="w-4 h-4" />
+                          <span>Салон красоты - 3 900 ₽</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.package && <p className="text-sm text-destructive">{errors.package}</p>}
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="name">Имя (необязательно)</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Иван Иванов"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className={errors.name ? "border-destructive" : ""}
-                  disabled={user !== null}
-                />
-                {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Телефон (необязательно)</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+7 (999) 123-45-67"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className={errors.phone ? "border-destructive" : ""}
-                />
-                {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="comment">Комментарий (необязательно)</Label>
-                <Textarea
-                  id="comment"
-                  placeholder="Дополнительные пожелания или вопросы"
-                  value={formData.comment}
-                  onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
-                  className={errors.comment ? "border-destructive" : ""}
-                  rows={4}
-                />
-                {errors.comment && <p className="text-sm text-destructive">{errors.comment}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <Checkbox
-                    id="consent"
-                    checked={formData.consentGiven}
-                    onCheckedChange={(checked) => setFormData({ ...formData, consentGiven: checked === true })}
-                    className={errors.consentGiven ? "border-destructive" : ""}
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="your@email.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className={errors.email ? "border-destructive" : ""}
+                    disabled={user !== null}
                   />
-                  <div className="flex-1">
-                    <Label htmlFor="consent" className="text-sm font-normal cursor-pointer">
-                      Я соглашаюсь на{" "}
-                      <Link 
-                        to="/personal-data-consent" 
-                        className="text-primary hover:underline"
-                        target="_blank"
-                      >
-                        обработку персональных данных
-                      </Link>
-                      {" "}*
-                    </Label>
-                    {errors.consentGiven && (
-                      <p className="text-sm text-destructive mt-1">{errors.consentGiven}</p>
-                    )}
+                  {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                  <p className="text-xs text-muted-foreground">На этот email придут файлы после оплаты</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="name">Имя (необязательно)</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Иван Иванов"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className={errors.name ? "border-destructive" : ""}
+                    disabled={user !== null}
+                  />
+                  {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Телефон (необязательно)</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="+7 (999) 123-45-67"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className={errors.phone ? "border-destructive" : ""}
+                  />
+                  {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="comment">Комментарий (необязательно)</Label>
+                  <Textarea
+                    id="comment"
+                    placeholder="Дополнительные пожелания или вопросы"
+                    value={formData.comment}
+                    onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
+                    className={errors.comment ? "border-destructive" : ""}
+                    rows={4}
+                  />
+                  {errors.comment && <p className="text-sm text-destructive">{errors.comment}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <Checkbox
+                      id="consent"
+                      checked={formData.consentGiven}
+                      onCheckedChange={(checked) => setFormData({ ...formData, consentGiven: checked === true })}
+                      className={errors.consentGiven ? "border-destructive" : ""}
+                    />
+                    <div className="flex-1">
+                      <Label htmlFor="consent" className="text-sm font-normal cursor-pointer">
+                        Я соглашаюсь на{" "}
+                        <Link 
+                          to="/personal-data-consent" 
+                          className="text-primary hover:underline"
+                          target="_blank"
+                        >
+                          обработку персональных данных
+                        </Link>
+                        {" "}*
+                      </Label>
+                      {errors.consentGiven && (
+                        <p className="text-sm text-destructive mt-1">{errors.consentGiven}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="pt-4 border-t">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-lg font-medium">Итого к оплате:</span>
-                  <span className="text-2xl font-bold">
-                    {formData.package === "office" ? "3 500" : "3 900"} ₽
-                  </span>
+                <div className="pt-4 border-t">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-lg font-medium">Итого к оплате:</span>
+                    <span className="text-2xl font-bold">
+                      {formData.package === "office" ? "3 500" : "3 900"} ₽
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <Button
+                      type="submit"
+                      variant="gradient"
+                      size="lg"
+                      className="w-full"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Обработка..." : "Перейти к оплате"}
+                    </Button>
+                    
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="lg"
+                      className="w-full"
+                      onClick={() => setOrderType(null)}
+                    >
+                      Назад к выбору
+                    </Button>
+                  </div>
                 </div>
-                
-                <Button
-                  type="submit"
-                  variant="gradient"
-                  size="lg"
-                  className="w-full"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Обработка..." : "Перейти к оплате"}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+              </form>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </section>
   );
