@@ -18,14 +18,19 @@ export type Database = {
         Row: {
           comment: string | null
           created_at: string
+          currency: string | null
+          download_url: string | null
           email: string
           id: string
           name: string
           package: string
           package_price: number
           payment_amount: number | null
+          payment_id: string | null
           payment_status: string
           phone: string
+          product_id: string | null
+          sent_at: string | null
           status: string
           stripe_payment_intent_id: string | null
           updated_at: string
@@ -34,14 +39,19 @@ export type Database = {
         Insert: {
           comment?: string | null
           created_at?: string
+          currency?: string | null
+          download_url?: string | null
           email: string
           id?: string
           name: string
           package?: string
           package_price?: number
           payment_amount?: number | null
+          payment_id?: string | null
           payment_status?: string
           phone: string
+          product_id?: string | null
+          sent_at?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
           updated_at?: string
@@ -50,18 +60,61 @@ export type Database = {
         Update: {
           comment?: string | null
           created_at?: string
+          currency?: string | null
+          download_url?: string | null
           email?: string
           id?: string
           name?: string
           package?: string
           package_price?: number
           payment_amount?: number | null
+          payment_id?: string | null
           payment_status?: string
           phone?: string
+          product_id?: string | null
+          sent_at?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          created_at: string | null
+          file_path: string
+          id: string
+          is_active: boolean | null
+          price_rub: number
+          sku: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          file_path: string
+          id?: string
+          is_active?: boolean | null
+          price_rub: number
+          sku: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          file_path?: string
+          id?: string
+          is_active?: boolean | null
+          price_rub?: number
+          sku?: string
+          title?: string
         }
         Relationships: []
       }

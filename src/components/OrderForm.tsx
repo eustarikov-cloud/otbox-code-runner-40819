@@ -91,19 +91,30 @@ export const OrderForm = () => {
         throw insertError;
       }
 
+      // Create payment in YooKassa
+      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
+        'yookassa-create-payment',
+        {
+          body: {
+            email: validatedData.email,
+            productSku: `${validatedData.package}-package`,
+          }
+        }
+      );
+
+      if (paymentError || !paymentData?.confirmation_url) {
+        throw new Error(paymentError?.message || 'Не удалось создать платеж');
+      }
+
       toast({
         title: "Заказ создан!",
-        description: "Сейчас вы будете перенаправлены на страницу оплаты",
+        description: "Перенаправляем на страницу оплаты...",
       });
 
-      // TODO: Redirect to YooKassa payment page
-      // For now, just show success message
+      // Redirect to YooKassa payment page
       setTimeout(() => {
-        toast({
-          title: "Интеграция с ЮKassa",
-          description: "Скоро здесь будет редирект на оплату",
-        });
-      }, 1500);
+        window.location.href = paymentData.confirmation_url;
+      }, 1000);
 
     } catch (error: any) {
       if (error instanceof z.ZodError) {
