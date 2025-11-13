@@ -1,5 +1,5 @@
-// Supabase Edge Function for YooKassa webhook
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,178 +13,142 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const event = await req.json();
-    
-    console.log('Received YooKassa webhook event:', event);
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    const fromEmail = Deno.env.get('FROM_EMAIL') || 'OT-Box <no-reply@otbox.ru>';
+    const downloadTtlMinutes = parseInt(Deno.env.get('DOWNLOAD_TTL_MIN') || '120');
 
-    // Only process successful payments
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Получаем событие от YooKassa
+    const event = await req.json();
+    console.log('Received webhook event:', event.event);
+
+    // Обрабатываем только успешные платежи
     if (event.event !== 'payment.succeeded') {
-      console.log('Ignoring event type:', event.event);
-      return new Response('OK', { status: 200, headers: corsHeaders });
+      console.log('Ignoring event:', event.event);
+      return new Response('OK', { status: 200 });
     }
 
     const payment = event.object;
     const email = payment.metadata?.email;
     const sku = payment.metadata?.sku;
-    const productId = payment.metadata?.product_id;
     const paymentId = payment.id;
     const amount = Number(payment.amount?.value || 0);
 
-    if (!email || !sku || !productId) {
-      console.error('Missing required metadata:', { email, sku, productId });
-      return new Response('Missing metadata', { status: 400, headers: corsHeaders });
+    if (!email || !sku) {
+      console.error('Missing metadata in payment:', paymentId);
+      return new Response('Missing metadata', { status: 200 });
     }
 
-    console.log('Processing payment for:', { email, sku, productId, paymentId, amount });
+    console.log('Processing payment:', paymentId, 'for', email);
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // Get product details
+    // Получаем информацию о продукте
     const { data: product, error: productError } = await supabase
       .from('products')
       .select('*')
-      .eq('id', productId)
+      .eq('sku', sku)
       .single();
 
     if (productError || !product) {
-      console.error('Product not found:', productError);
-      return new Response('Product not found', { status: 404, headers: corsHeaders });
+      console.error('Product not found:', sku, productError);
+      return new Response('Product not found', { status: 200 });
     }
 
-    console.log('Found product:', product);
+    console.log('Found product:', product.title);
 
-    // Generate signed URL for file download (2 hours expiry)
-    const ttlMinutes = parseInt(Deno.env.get('DOWNLOAD_TTL_MIN') || '120');
-    const { data: signedUrlData, error: urlError } = await supabase.storage
+    // Генерируем временную ссылку на файл
+    const { data: signedUrlData, error: signedUrlError } = await supabase
+      .storage
       .from('digital-files')
-      .createSignedUrl(product.file_path, ttlMinutes * 60);
+      .createSignedUrl(product.file_path, downloadTtlMinutes * 60);
 
-    if (urlError || !signedUrlData) {
-      console.error('Failed to generate download URL:', urlError);
-      return new Response('Failed to generate download URL', { status: 500, headers: corsHeaders });
+    if (signedUrlError) {
+      console.error('Error creating signed URL:', signedUrlError);
     }
 
-    const downloadUrl = signedUrlData.signedUrl;
-    console.log('Generated download URL (expires in', ttlMinutes, 'minutes)');
+    const downloadUrl = signedUrlData?.signedUrl || null;
 
-    // Create order record
+    // Создаем запись заказа
     const { error: orderError } = await supabase
       .from('orders')
       .insert({
         email,
-        product_id: productId,
+        product_id: product.id,
         amount,
-        currency: 'RUB',
         status: 'succeeded',
+        currency: 'RUB',
         payment_status: 'succeeded',
         payment_id: paymentId,
         download_url: downloadUrl,
-        package: sku.replace('-package', ''), // Convert 'office-package' to 'office'
-        name: 'Не указано',
-        phone: 'Не указан',
-        package_price: amount,
+        sent_at: new Date().toISOString(),
+        package: sku.replace('-package', ''),
+        package_price: product.price_rub,
         payment_amount: amount,
+        name: 'Не указано',
+        phone: 'Не указано'
       });
 
     if (orderError) {
-      console.error('Failed to create order:', orderError);
-      return new Response('Failed to create order', { status: 500, headers: corsHeaders });
-    }
-
-    console.log('Order created successfully');
-
-    // Send email with download link using Resend
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    const fromEmail = Deno.env.get('FROM_EMAIL') || 'OT-Box <no-reply@otbox.ru>';
-
-    if (!resendApiKey) {
-      console.error('Resend API key not configured');
-      return new Response('Email service not configured', { status: 500, headers: corsHeaders });
-    }
-
-    const emailHtml = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-            .button { display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>Спасибо за покупку в OT-Box! 🎉</h1>
-            </div>
-            <div class="content">
-              <p>Здравствуйте!</p>
-              <p>Ваш заказ успешно оплачен. Спасибо за доверие!</p>
-              <p><strong>Купленный пакет:</strong> ${product.title}</p>
-              <p><strong>Сумма:</strong> ${amount} ₽</p>
-              <p>Для скачивания документов перейдите по ссылке ниже:</p>
-              <div style="text-align: center;">
-                <a href="${downloadUrl}" class="button">Скачать документы</a>
-              </div>
-              <p style="color: #666; font-size: 14px;">
-                <strong>Внимание:</strong> Ссылка для скачивания активна в течение ${ttlMinutes} минут (${Math.floor(ttlMinutes / 60)} часов).
-              </p>
-              <p>Если у вас возникли вопросы, свяжитесь с нами.</p>
-              <p>С уважением,<br>Команда OT-Box</p>
-            </div>
-            <div class="footer">
-              <p>Это автоматическое письмо, пожалуйста, не отвечайте на него.</p>
-            </div>
-          </div>
-        </body>
-      </html>
-    `;
-
-    const emailResponse = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: fromEmail,
-        to: [email],
-        subject: 'OT-Box: Ваши документы готовы к скачиванию',
-        html: emailHtml,
-      }),
-    });
-
-    if (!emailResponse.ok) {
-      const emailError = await emailResponse.text();
-      console.error('Failed to send email:', emailError);
-      // Don't fail the webhook if email fails, payment was successful
+      console.error('Error creating order:', orderError);
     } else {
-      console.log('Email sent successfully to:', email);
-      
-      // Update order with sent timestamp
-      await supabase
-        .from('orders')
-        .update({ sent_at: new Date().toISOString() })
-        .eq('payment_id', paymentId);
+      console.log('Order created successfully');
     }
 
-    return new Response('OK', { status: 200, headers: corsHeaders });
+    // Отправляем письмо с ссылкой на скачивание
+    if (downloadUrl && resendApiKey) {
+      console.log('Sending email to:', email);
+      
+      const emailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333;">Спасибо за покупку в OT-Box!</h2>
+          <p>Ваш заказ успешно оплачен.</p>
+          <p><strong>Документ:</strong> ${product.title}</p>
+          <div style="margin: 30px 0;">
+            <a href="${downloadUrl}" 
+               style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              Скачать файл
+            </a>
+          </div>
+          <p style="color: #666; font-size: 14px;">
+            Ссылка будет активна в течение ${downloadTtlMinutes} минут.
+          </p>
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+          <p style="color: #999; font-size: 12px;">
+            С уважением,<br>
+            Команда OT-Box
+          </p>
+        </div>
+      `;
 
-  } catch (error: any) {
-    console.error('Error in yookassa-webhook:', error);
-    return new Response(
-      JSON.stringify({ error: error.message }), 
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      const emailResponse = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: fromEmail,
+          to: email,
+          subject: 'OT-Box: Ссылка на скачивание документов',
+          html: emailHtml
+        })
+      });
+
+      if (emailResponse.ok) {
+        console.log('Email sent successfully');
+      } else {
+        const emailError = await emailResponse.text();
+        console.error('Error sending email:', emailError);
       }
-    );
+    } else {
+      console.log('Skipping email: no download URL or Resend API key');
+    }
+
+    return new Response('OK', { status: 200 });
+  } catch (error) {
+    console.error('Error in yookassa-webhook:', error);
+    return new Response(error.message, { status: 500 });
   }
 });

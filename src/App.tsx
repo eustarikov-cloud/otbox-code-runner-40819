@@ -10,6 +10,7 @@ import PersonalDataConsent from "./pages/PersonalDataConsent";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
+import ThankYou from "./pages/ThankYou";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/personal-data-consent" element={<PersonalDataConsent />} />
           <Route path="/terms" element={<Terms />} />
