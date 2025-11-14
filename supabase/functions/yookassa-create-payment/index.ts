@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
     // Создаем уникальный ключ идемпотентности
     const idempotenceKey = crypto.randomUUID();
 
-    // Формируем тело запроса для YooKassa
+    // Формируем тело запроса для YooKassa с чеком (54-ФЗ)
     const paymentData = {
       amount: {
         value: product.price_rub.toFixed(2),
@@ -59,6 +59,24 @@ Deno.serve(async (req) => {
         return_url: `${siteUrl}/thank-you?payment=success`
       },
       description: `OT-Box: ${product.title}`,
+      receipt: {
+        customer: {
+          email: email
+        },
+        items: [
+          {
+            description: product.title,
+            quantity: '1.00',
+            amount: {
+              value: product.price_rub.toFixed(2),
+              currency: 'RUB'
+            },
+            vat_code: 1, // НДС не облагается
+            payment_mode: 'full_payment',
+            payment_subject: 'commodity'
+          }
+        ]
+      },
       metadata: {
         email,
         sku: product.sku

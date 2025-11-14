@@ -11,6 +11,8 @@ import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import ThankYou from "./pages/ThankYou";
+import Buy from "./pages/Buy";
+import AdminEmailTest from "./pages/AdminEmailTest";
 
 const queryClient = new QueryClient();
 
@@ -23,11 +25,13 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/buy" element={<Buy />} />
           <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/personal-data-consent" element={<PersonalDataConsent />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/admin/email-test" element={<AdminEmailTest />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
