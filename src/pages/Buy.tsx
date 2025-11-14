@@ -71,23 +71,24 @@ export default function Buy() {
         {
           body: {
             email,
-            productSku: selectedSku,
+            sku: selectedSku,
           },
         }
       );
 
       if (error) throw error;
 
-      if (data?.confirmation_url) {
-        window.location.href = data.confirmation_url;
+      if (data?.url) {
+        // External redirect to YooKassa payment page
+        window.location.href = data.url;
       } else {
-        throw new Error("No confirmation URL received");
+        throw new Error("No payment URL received");
       }
     } catch (error) {
       console.error("Payment creation error:", error);
       toast({
         title: "Ошибка создания платежа",
-        description: "Попробуйте позже или свяжитесь с поддержкой",
+        description: "Проверьте email/товар и попробуйте снова",
         variant: "destructive",
       });
       setLoading(false);
