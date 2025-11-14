@@ -1,3 +1,5 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -12,7 +14,11 @@ Deno.serve(async (req) => {
   try {
     const shopId = Deno.env.get('YOOKASSA_SHOP_ID');
     const secretKey = Deno.env.get('YOOKASSA_SECRET_KEY');
-    const siteUrl = Deno.env.get('VITE_SUPABASE_URL') || 'https://otbox.ru';
+    const siteUrl = Deno.env.get('SITE_URL') || 'https://otbox.ru';
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     if (!shopId || !secretKey) {
       console.error('Missing YooKassa credentials');
@@ -22,68 +28,58 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { email, productSku } = await req.json();
+    const { email, sku } = await req.json();
 
-    if (!email || !productSku) {
+    if (!email || !sku) {
       return new Response(
-        JSON.stringify({ error: 'Email and product SKU are required' }),
+        JSON.stringify({ error: 'Email and SKU are required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Получаем информацию о продукте
-    let product;
-    if (productSku === 'office-package') {
-      product = { sku: 'office-package', title: 'Пакет документов "Офис"', price_rub: 3500 };
-    } else if (productSku === 'salon-package') {
-      product = { sku: 'salon-package', title: 'Пакет документов "Салон красоты"', price_rub: 3900 };
-    } else {
+    console.log('Creating payment for:', { email, sku });
+
+    // Получаем информацию о продукте из базы данных
+    const { data: product, error: productError } = await supabase
+      .from('products')
+      .select('*')
+      .eq('sku', sku)
+      .eq('is_active', true)
+      .single();
+
+    if (productError || !product) {
+      console.error('Product not found:', sku, productError);
       return new Response(
-        JSON.stringify({ error: 'Invalid product SKU' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: 'Product not found' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    console.log('Found product:', product.title, product.price_rub);
 
     // Создаем уникальный ключ идемпотентности
     const idempotenceKey = crypto.randomUUID();
 
-    // Формируем тело запроса для YooKassa с чеком (54-ФЗ)
+    // Формируем тело запроса для YooKassa
     const paymentData = {
       amount: {
-        value: product.price_rub.toFixed(2),
+        value: Number(product.price_rub).toFixed(2),
         currency: 'RUB'
       },
       capture: true,
       confirmation: {
         type: 'redirect',
-        return_url: `${siteUrl}/thank-you?payment=success`
+        return_url: `${siteUrl}/thank-you`
       },
-      description: `OT-Box: ${product.title}`,
-      receipt: {
-        customer: {
-          email: email
-        },
-        items: [
-          {
-            description: product.title,
-            quantity: '1.00',
-            amount: {
-              value: product.price_rub.toFixed(2),
-              currency: 'RUB'
-            },
-            vat_code: 1, // НДС не облагается
-            payment_mode: 'full_payment',
-            payment_subject: 'commodity'
-          }
-        ]
-      },
+      description: `OT-Box: ${product.sku}`,
       metadata: {
         email,
-        sku: product.sku
+        sku: product.sku,
+        product_id: product.id
       }
     };
 
-    console.log('Creating payment:', paymentData);
+    console.log('Sending payment request to YooKassa:', paymentData);
 
     // Отправляем запрос в YooKassa
     const response = await fetch('https://api.yookassa.ru/v3/payments', {
@@ -98,8 +94,8 @@ Deno.serve(async (req) => {
 
     const responseData = await response.json();
 
-    if (!response.ok) {
-      console.error('YooKassa API error:', responseData);
+    if (!response.ok || !responseData?.confirmation?.confirmation_url) {
+      console.error('YooKassa response:', responseData);
       return new Response(
         JSON.stringify({ error: 'Payment creation failed', details: responseData }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -111,7 +107,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         payment_id: responseData.id,
-        confirmation_url: responseData.confirmation?.confirmation_url
+        url: responseData.confirmation.confirmation_url
       }),
       {
         status: 200,
