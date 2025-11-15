@@ -97,12 +97,12 @@ export const OrderForm = () => {
         {
           body: {
             email: validatedData.email,
-            productSku: `${validatedData.package}-package`,
+            sku: `${validatedData.package}-package`,
           }
         }
       );
 
-      if (paymentError || !paymentData?.confirmation_url) {
+      if (paymentError || !paymentData?.url) {
         throw new Error(paymentError?.message || 'Не удалось создать платеж');
       }
 
@@ -113,7 +113,7 @@ export const OrderForm = () => {
 
       // Redirect to YooKassa payment page
       setTimeout(() => {
-        window.location.href = paymentData.confirmation_url;
+        window.location.href = paymentData.url;
       }, 1000);
 
     } catch (error: any) {
