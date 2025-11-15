@@ -79,8 +79,12 @@ export default function Buy() {
       if (error) throw error;
 
       if (data?.url) {
-        // External redirect to YooKassa payment page
-        window.location.href = data.url;
+        // External redirect to YooKassa payment page (top window to escape iframe)
+        if (window.top) {
+          window.top.location.href = data.url;
+        } else {
+          window.location.href = data.url;
+        }
       } else {
         throw new Error("Не получена ссылка на оплату");
       }

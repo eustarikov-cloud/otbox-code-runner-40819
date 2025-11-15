@@ -111,9 +111,13 @@ export const OrderForm = () => {
         description: "Перенаправляем на страницу оплаты...",
       });
 
-      // Redirect to YooKassa payment page
+      // Redirect to YooKassa payment page (top window to escape iframe)
       setTimeout(() => {
-        window.location.href = paymentData.url;
+        if (window.top) {
+          window.top.location.href = paymentData.url;
+        } else {
+          window.location.href = paymentData.url;
+        }
       }, 1000);
 
     } catch (error: any) {
