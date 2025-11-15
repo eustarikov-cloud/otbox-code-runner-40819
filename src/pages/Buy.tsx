@@ -82,7 +82,7 @@ export default function Buy() {
         // External redirect to YooKassa payment page
         window.location.href = data.url;
       } else {
-        throw new Error("No payment URL received");
+        throw new Error("Не получена ссылка на оплату");
       }
     } catch (error) {
       console.error("Payment creation error:", error);
