@@ -32,8 +32,21 @@ export const Header = () => {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button onClick={() => navigate('/buy')} variant="gradient" size="lg">
-            Купить
+          <Button 
+            onClick={() => navigate('/auth?mode=signup')} 
+            variant="outline" 
+            size="lg"
+            className="hover:bg-primary hover:text-primary-foreground transition-colors"
+          >
+            Регистрация
+          </Button>
+          <Button 
+            onClick={() => navigate('/auth?mode=login')} 
+            variant="default" 
+            size="lg"
+            className="hover:bg-primary-glow hover:scale-105 transition-all"
+          >
+            Вход
           </Button>
         </div>
       </div>
