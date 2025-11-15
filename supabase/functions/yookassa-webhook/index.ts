@@ -100,25 +100,95 @@ Deno.serve(async (req) => {
       console.log('Sending email to:', email);
       
       const emailHtml = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333;">Спасибо за покупку в OT-Box!</h2>
-          <p>Ваш заказ успешно оплачен.</p>
-          <p><strong>Документ:</strong> ${product.title}</p>
-          <div style="margin: 30px 0;">
-            <a href="${downloadUrl}" 
-               style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-              Скачать файл
-            </a>
-          </div>
-          <p style="color: #666; font-size: 14px;">
-            Ссылка будет активна в течение ${downloadTtlMinutes} минут.
-          </p>
-          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-          <p style="color: #999; font-size: 12px;">
-            С уважением,<br>
-            Команда OT-Box
-          </p>
-        </div>
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #f6f9fc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f6f9fc; padding: 40px 0;">
+            <tr>
+              <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+                  <!-- Header -->
+                  <tr>
+                    <td style="padding: 40px 40px 20px;">
+                      <h1 style="margin: 0; color: #333; font-size: 28px; font-weight: bold;">
+                        Спасибо за покупку!
+                      </h1>
+                    </td>
+                  </tr>
+                  
+                  <!-- Content -->
+                  <tr>
+                    <td style="padding: 0 40px;">
+                      <p style="margin: 16px 0; color: #333; font-size: 16px; line-height: 26px;">
+                        Ваш заказ успешно оплачен. Документы готовы к скачиванию.
+                      </p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Product Info -->
+                  <tr>
+                    <td style="padding: 0 40px;">
+                      <div style="background-color: #f9fafb; padding: 24px; border-radius: 8px; margin: 24px 0;">
+                        <p style="margin: 0 0 8px; color: #6b7280; font-size: 14px;">
+                          Приобретенный продукт:
+                        </p>
+                        <p style="margin: 0; color: #111827; font-size: 18px; font-weight: 600;">
+                          ${product.title}
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <!-- Download Button -->
+                  <tr>
+                    <td style="padding: 32px 40px;" align="center">
+                      <a href="${downloadUrl}" 
+                         style="background-color: #4CAF50; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-size: 16px; font-weight: bold; display: inline-block;">
+                        Скачать документы
+                      </a>
+                    </td>
+                  </tr>
+                  
+                  <!-- Note -->
+                  <tr>
+                    <td style="padding: 0 40px;">
+                      <p style="margin: 24px 0; color: #6b7280; font-size: 14px; line-height: 24px;">
+                        ⏱️ Ссылка будет активна в течение <strong>${downloadTtlMinutes} минут</strong>
+                      </p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Support -->
+                  <tr>
+                    <td style="padding: 0 40px;">
+                      <p style="margin: 32px 0; color: #6b7280; font-size: 14px; line-height: 24px;">
+                        Если у вас возникли вопросы, свяжитесь с нами: 
+                        <a href="mailto:support@otbox.ru" style="color: #4CAF50; text-decoration: underline;">
+                          support@otbox.ru
+                        </a>
+                      </p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Footer -->
+                  <tr>
+                    <td style="padding: 24px 40px 40px; border-top: 1px solid #e5e7eb;">
+                      <p style="margin: 0; color: #9ca3af; font-size: 14px; line-height: 24px;">
+                        С уважением,<br>
+                        Команда OT-Box
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
       `;
 
       const emailResponse = await fetch('https://api.resend.com/emails', {
