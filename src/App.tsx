@@ -10,9 +10,12 @@ import PersonalDataConsent from "./pages/PersonalDataConsent";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
 import ThankYou from "./pages/ThankYou";
 import Buy from "./pages/Buy";
 import AdminEmailTest from "./pages/AdminEmailTest";
+import WebhookTest from "./pages/WebhookTest";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +28,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/buy" element={<Buy />} />
           <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/privacy" element={<Privacy />} />
@@ -32,6 +37,7 @@ const App = () => (
           <Route path="/terms" element={<Terms />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin/email-test" element={<AdminEmailTest />} />
+          <Route path="/admin/webhook-test" element={<WebhookTest />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

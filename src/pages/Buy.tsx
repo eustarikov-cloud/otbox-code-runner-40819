@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { BackButton } from "@/components/BackButton";
 
 interface Product {
   id: string;
@@ -110,6 +111,7 @@ export default function Buy() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
+      <BackButton />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-md mx-auto">
           <h1 className="text-3xl font-bold mb-2">Купить документ OT-Box</h1>

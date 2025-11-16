@@ -1,10 +1,12 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { BackButton } from "@/components/BackButton";
 
 const Privacy = () => {
   return (
     <div className="min-h-screen">
       <Header />
+      <BackButton />
       <main className="pt-24 pb-12">
         <article className="container mx-auto px-4 max-w-4xl">
           <h1 className="text-4xl font-bold mb-8">Политика конфиденциальности</h1>
