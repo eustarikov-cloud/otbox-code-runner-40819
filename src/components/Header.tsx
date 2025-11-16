@@ -1,8 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 export const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  const isCheckoutPage = location.pathname === '/buy';
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -31,24 +34,26 @@ export const Header = () => {
           </button>
         </nav>
 
-        <div className="flex items-center gap-3">
-          <Button 
-            onClick={() => navigate('/signup')} 
-            variant="outline" 
-            size="lg"
-            className="hover:bg-primary hover:text-primary-foreground transition-colors"
-          >
-            Регистрация
-          </Button>
-          <Button 
-            onClick={() => navigate('/login')} 
-            variant="default" 
-            size="lg"
-            className="hover:bg-primary-glow hover:scale-105 transition-all"
-          >
-            Вход
-          </Button>
-        </div>
+        {!isCheckoutPage && (
+          <div className="flex items-center gap-3">
+            <Button 
+              onClick={() => navigate('/signup')} 
+              variant="outline" 
+              size="lg"
+              className="hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
+              Регистрация
+            </Button>
+            <Button 
+              onClick={() => navigate('/login')} 
+              variant="default" 
+              size="lg"
+              className="hover:bg-primary-glow hover:scale-105 transition-all"
+            >
+              Вход
+            </Button>
+          </div>
+        )}
       </div>
     </header>
   );

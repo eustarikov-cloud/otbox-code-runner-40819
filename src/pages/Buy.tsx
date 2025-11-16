@@ -1,14 +1,9 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
@@ -23,11 +18,14 @@ interface Product {
 }
 
 export default function Buy() {
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("");
-  const [selectedSku, setSelectedSku] = useState("");
+  const [consent, setConsent] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+
+  const preselectedSku = searchParams.get("sku") || "";
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -55,10 +53,19 @@ export default function Buy() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !selectedSku) {
+    if (!email || !preselectedSku) {
       toast({
         title: "Ошибка",
-        description: "Заполните все поля",
+        description: "Укажите email",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!consent) {
+      toast({
+        title: "Ошибка",
+        description: "Необходимо согласие с офертой",
         variant: "destructive",
       });
       return;
@@ -72,7 +79,7 @@ export default function Buy() {
         {
           body: {
             email,
-            sku: selectedSku,
+            sku: preselectedSku,
           },
         }
       );
@@ -80,8 +87,6 @@ export default function Buy() {
       if (error) throw error;
 
       if (data?.url) {
-        // External redirect to YooKassa payment page
-        // Try to break out of iframe, or open in new tab
         try {
           if (window.top && window.top !== window) {
             window.top.location.href = data.url;
@@ -89,7 +94,6 @@ export default function Buy() {
             window.location.href = data.url;
           }
         } catch (e) {
-          // If blocked, open in new window
           window.open(data.url, '_blank');
         }
       } else {
@@ -99,14 +103,14 @@ export default function Buy() {
       console.error("Payment creation error:", error);
       toast({
         title: "Ошибка создания платежа",
-        description: "Проверьте email/товар и попробуйте снова",
+        description: "Проверьте email и попробуйте снова",
         variant: "destructive",
       });
       setLoading(false);
     }
   };
 
-  const selectedProduct = products.find((p) => p.sku === selectedSku);
+  const selectedProduct = products.find((p) => p.sku === preselectedSku);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -114,10 +118,20 @@ export default function Buy() {
       <BackButton />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-md mx-auto">
-          <h1 className="text-3xl font-bold mb-2">Купить документ OT-Box</h1>
+          <h1 className="text-3xl font-bold mb-2">Быстрый заказ</h1>
           <p className="text-muted-foreground mb-8">
-            Заполните форму для перехода к оплате
+            Укажите email и оплатите — файл придет на почту после оплаты
           </p>
+
+          {selectedProduct && (
+            <div className="p-6 bg-muted rounded-lg mb-6">
+              <p className="text-sm font-medium mb-1">Вы покупаете:</p>
+              <p className="text-xl font-bold">{selectedProduct.title}</p>
+              <p className="text-3xl font-bold text-primary mt-2">
+                {selectedProduct.price_rub} ₽
+              </p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
@@ -132,43 +146,35 @@ export default function Buy() {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="product">Выберите документ</Label>
-              <Select value={selectedSku} onValueChange={setSelectedSku}>
-                <SelectTrigger id="product">
-                  <SelectValue placeholder="Выберите пакет документов" />
-                </SelectTrigger>
-                <SelectContent>
-                  {products.map((product) => (
-                    <SelectItem key={product.id} value={product.sku}>
-                      {product.title} — {product.price_rub} ₽
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="flex items-start space-x-2">
+              <Checkbox
+                id="consent"
+                checked={consent}
+                onCheckedChange={(checked) => setConsent(checked as boolean)}
+              />
+              <Label htmlFor="consent" className="text-sm leading-relaxed cursor-pointer">
+                Я согласен с{" "}
+                <a href="/terms" target="_blank" className="text-primary hover:underline">
+                  офертой
+                </a>{" "}
+                и{" "}
+                <a href="/privacy" target="_blank" className="text-primary hover:underline">
+                  политикой конфиденциальности
+                </a>
+              </Label>
             </div>
-
-            {selectedProduct && (
-              <div className="p-4 bg-muted rounded-lg">
-                <p className="text-sm font-medium mb-1">Выбранный пакет:</p>
-                <p className="text-lg font-bold">{selectedProduct.title}</p>
-                <p className="text-2xl font-bold text-primary mt-2">
-                  {selectedProduct.price_rub} ₽
-                </p>
-              </div>
-            )}
 
             <Button
               type="submit"
               className="w-full"
               size="lg"
-              disabled={loading || !selectedSku}
+              disabled={loading || !selectedProduct || !consent}
             >
-              {loading ? "Создание платежа..." : "Перейти к оплате"}
+              {loading ? "Переход к оплате..." : "Оплатить"}
             </Button>
 
             <p className="text-xs text-muted-foreground text-center">
-              После оплаты ссылка на скачивание будет отправлена на указанный email
+              Безопасная оплата через YooKassa. После оплаты ссылка на скачивание придет на указанный email.
             </p>
           </form>
         </div>
