@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { BackButton } from "@/components/BackButton";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,6 +37,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen">
       <Header />
+      <BackButton />
       <main className="pt-24 pb-12">
         <div className="container mx-auto px-4 max-w-6xl">
           <h1 className="text-4xl font-bold text-center mb-4">Контакты</h1>

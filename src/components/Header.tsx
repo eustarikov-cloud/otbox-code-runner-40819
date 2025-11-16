@@ -33,7 +33,7 @@ export const Header = () => {
 
         <div className="flex items-center gap-3">
           <Button 
-            onClick={() => navigate('/auth?mode=signup')} 
+            onClick={() => navigate('/signup')} 
             variant="outline" 
             size="lg"
             className="hover:bg-primary hover:text-primary-foreground transition-colors"
@@ -41,7 +41,7 @@ export const Header = () => {
             Регистрация
           </Button>
           <Button 
-            onClick={() => navigate('/auth?mode=login')} 
+            onClick={() => navigate('/login')} 
             variant="default" 
             size="lg"
             className="hover:bg-primary-glow hover:scale-105 transition-all"

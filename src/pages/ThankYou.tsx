@@ -1,11 +1,13 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { BackButton } from "@/components/BackButton";
 import { CheckCircle, Mail } from "lucide-react";
 
 export default function ThankYou() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
+      <BackButton />
       <main className="flex-1 flex items-center justify-center px-4 py-16">
         <div className="max-w-md w-full text-center space-y-6">
           <CheckCircle className="w-16 h-16 mx-auto text-green-500" />
