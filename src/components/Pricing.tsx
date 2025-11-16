@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -40,9 +41,10 @@ const packages = [
 ];
 
 export const Pricing = () => {
-  const scrollToOrder = () => {
-    const element = document.getElementById('order');
-    element?.scrollIntoView({ behavior: 'smooth' });
+  const navigate = useNavigate();
+
+  const handleBuyClick = (sku: string) => {
+    navigate(`/buy?sku=${sku}`);
   };
 
   return (
@@ -96,8 +98,8 @@ export const Pricing = () => {
                   ))}
                 </ul>
 
-                <Button onClick={scrollToOrder} className="w-full hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" variant="gradient" size="lg">
-                  Заказать →
+                <Button onClick={() => handleBuyClick(pkg.packageType)} className="w-full hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" variant="gradient" size="lg">
+                  Купить →
                 </Button>
               </Card>
             );
