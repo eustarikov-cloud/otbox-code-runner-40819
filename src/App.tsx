@@ -16,6 +16,7 @@ import ThankYou from "./pages/ThankYou";
 import Buy from "./pages/Buy";
 import AdminEmailTest from "./pages/AdminEmailTest";
 import WebhookTest from "./pages/WebhookTest";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/buy" element={<Buy />} />
           <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/privacy" element={<Privacy />} />
