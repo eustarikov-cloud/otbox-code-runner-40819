@@ -1,8 +1,24 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { User } from "lucide-react";
 
 export const Header = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -32,22 +48,36 @@ export const Header = () => {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button 
-            onClick={() => navigate('/signup')} 
-            variant="outline" 
-            size="lg"
-            className="hover:bg-primary hover:text-primary-foreground transition-colors"
-          >
-            Регистрация
-          </Button>
-          <Button 
-            onClick={() => navigate('/login')} 
-            variant="default" 
-            size="lg"
-            className="hover:bg-primary-glow hover:scale-105 transition-all"
-          >
-            Вход
-          </Button>
+          {user ? (
+            <Button 
+              onClick={() => navigate('/profile')} 
+              variant="outline" 
+              size="lg"
+              className="hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
+              <User className="h-4 w-4 mr-2" />
+              Профиль
+            </Button>
+          ) : (
+            <>
+              <Button 
+                onClick={() => navigate('/signup')} 
+                variant="outline" 
+                size="lg"
+                className="hover:bg-primary hover:text-primary-foreground transition-colors"
+              >
+                Регистрация
+              </Button>
+              <Button 
+                onClick={() => navigate('/login')} 
+                variant="default" 
+                size="lg"
+                className="hover:bg-primary-glow hover:scale-105 transition-all"
+              >
+                Вход
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
