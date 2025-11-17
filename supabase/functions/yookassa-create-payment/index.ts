@@ -125,6 +125,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         payment_id: responseData.id,
+        paymentId: responseData.id,
         url: responseData.confirmation.confirmation_url
       }),
       {
