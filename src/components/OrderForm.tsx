@@ -106,6 +106,28 @@ export const OrderForm = () => {
         throw new Error(paymentError?.message || 'Не удалось создать платеж');
       }
 
+      // Отправляем подтверждение заказа
+      try {
+        const packageNames = {
+          office: "Офис",
+          salon: "Салон красоты"
+        };
+
+        await supabase.functions.invoke('send-order-confirmation', {
+          body: {
+            orderId: paymentData.paymentId || paymentData.payment_id || 'unknown',
+            email: validatedData.email,
+            name: validatedData.name || "Не указано",
+            packageName: packageNames[validatedData.package],
+            price: paymentAmount,
+          }
+        });
+        console.log('Order confirmation email sent');
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+        // Не блокируем процесс оплаты, если email не отправился
+      }
+
       toast({
         title: "Заказ создан!",
         description: "Перенаправляем на страницу оплаты...",
