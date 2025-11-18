@@ -1,8 +1,12 @@
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Building2, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 const packages = [
   {
@@ -41,6 +45,60 @@ const packages = [
 ];
 
 export const Pricing = () => {
+  const [products, setProducts] = useState<Record<string, any>>({});
+  const [loading, setLoading] = useState(true);
+  const { addItem } = useCart();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("is_active", true);
+
+      if (error) {
+        console.error("Error fetching products:", error);
+      } else if (data) {
+        const productMap = data.reduce((acc, product) => {
+          acc[product.sku] = product;
+          return acc;
+        }, {} as Record<string, any>);
+        setProducts(productMap);
+      }
+      setLoading(false);
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleBuy = (packageType: string) => {
+    const product = products[packageType];
+    if (!product) {
+      toast({
+        title: "Ошибка",
+        description: "Товар не найден",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    addItem({
+      id: product.id,
+      sku: product.sku,
+      title: product.title,
+      price_rub: product.price_rub,
+    });
+
+    toast({
+      title: "Товар добавлен в корзину",
+      description: product.title,
+    });
+
+    navigate("/cart");
+  };
+
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
@@ -92,8 +150,14 @@ export const Pricing = () => {
                   ))}
                 </ul>
 
-                <Button asChild className="w-full hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" variant="gradient" size="lg">
-                  <Link to="/catalog">Заказать →</Link>
+                <Button 
+                  onClick={() => handleBuy(pkg.packageType)}
+                  className="w-full hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" 
+                  variant="gradient" 
+                  size="lg"
+                  disabled={loading || !products[pkg.packageType]}
+                >
+                  Заказать →
                 </Button>
               </Card>
             );
