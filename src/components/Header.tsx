@@ -44,9 +44,6 @@ export const Header = () => {
         </div>
         
         <nav className="hidden md:flex items-center gap-8">
-          <Link to="/catalog" className="text-sm hover:text-primary transition-colors">
-            Каталог
-          </Link>
           <button onClick={() => scrollToSection('how-it-works')} className="text-sm hover:text-primary transition-colors">
             Как работает
           </button>
