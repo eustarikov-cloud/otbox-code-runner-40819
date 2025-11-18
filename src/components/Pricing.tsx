@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -40,13 +41,8 @@ const packages = [
 ];
 
 export const Pricing = () => {
-  const scrollToOrder = () => {
-    const element = document.getElementById('order');
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <section id="catalog" className="py-20">
+    <section className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Готовые комплекты</h2>
@@ -96,8 +92,8 @@ export const Pricing = () => {
                   ))}
                 </ul>
 
-                <Button onClick={scrollToOrder} className="w-full hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" variant="gradient" size="lg">
-                  Заказать →
+                <Button asChild className="w-full hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" variant="gradient" size="lg">
+                  <Link to="/catalog">Заказать →</Link>
                 </Button>
               </Card>
             );

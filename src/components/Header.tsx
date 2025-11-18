@@ -1,12 +1,16 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { User } from "lucide-react";
+import { User, ShoppingCart } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
 
 export const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState<any>(null);
+  const { totalItems } = useCart();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -21,8 +25,12 @@ export const Header = () => {
   }, []);
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: 'smooth' });
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: id } });
+    } else {
+      const element = document.getElementById(id);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -36,9 +44,9 @@ export const Header = () => {
         </div>
         
         <nav className="hidden md:flex items-center gap-8">
-          <button onClick={() => scrollToSection('catalog')} className="text-sm hover:text-primary transition-colors">
+          <Link to="/catalog" className="text-sm hover:text-primary transition-colors">
             Каталог
-          </button>
+          </Link>
           <button onClick={() => scrollToSection('how-it-works')} className="text-sm hover:text-primary transition-colors">
             Как работает
           </button>
@@ -48,6 +56,20 @@ export const Header = () => {
         </nav>
 
         <div className="flex items-center gap-3">
+          <Button
+            onClick={() => navigate('/cart')}
+            variant="ghost"
+            size="icon"
+            className="relative"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {totalItems > 0 && (
+              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                {totalItems}
+              </Badge>
+            )}
+          </Button>
+
           {user ? (
             <Button 
               onClick={() => navigate('/profile')} 
