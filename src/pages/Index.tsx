@@ -5,7 +5,6 @@ import { Pricing } from "@/components/Pricing";
 import { WhyUs } from "@/components/WhyUs";
 import { Samples } from "@/components/Samples";
 import { HowItWorks } from "@/components/HowItWorks";
-import { OrderForm } from "@/components/OrderForm";
 import { FAQ } from "@/components/FAQ";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
@@ -23,7 +22,6 @@ const Index = () => {
         <WhyUs />
         <Samples />
         <HowItWorks />
-        <OrderForm />
         <FAQ />
         <CTA />
       </main>
