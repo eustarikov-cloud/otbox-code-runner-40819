@@ -3,26 +3,51 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { User, ShoppingCart } from "lucide-react";
+import { User, ShoppingCart, Shield } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
 export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { totalItems } = useCart();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
+      if (user) {
+        checkAdminStatus(user.id);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        checkAdminStatus(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkAdminStatus = async (userId: string) => {
+    try {
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
+
+      setIsAdmin(!!data);
+    } catch (error) {
+      console.error("Error checking admin status:", error);
+      setIsAdmin(false);
+    }
+  };
 
   const scrollToSection = (id: string) => {
     if (location.pathname !== '/') {
@@ -71,15 +96,28 @@ export const Header = () => {
           </Button>
 
           {user ? (
-            <Button 
-              onClick={() => navigate('/profile')} 
-              variant="outline" 
-              size="lg"
-              className="hover:bg-primary hover:text-primary-foreground transition-colors"
-            >
-              <User className="h-4 w-4 mr-2" />
-              Профиль
-            </Button>
+            <>
+              {isAdmin && (
+                <Button 
+                  onClick={() => navigate('/admin')} 
+                  variant="outline" 
+                  size="lg"
+                  className="hover:bg-primary hover:text-primary-foreground transition-colors"
+                >
+                  <Shield className="h-4 w-4 mr-2" />
+                  Админка
+                </Button>
+              )}
+              <Button 
+                onClick={() => navigate('/profile')} 
+                variant="outline" 
+                size="lg"
+                className="hover:bg-primary hover:text-primary-foreground transition-colors"
+              >
+                <User className="h-4 w-4 mr-2" />
+                Профиль
+              </Button>
+            </>
           ) : (
             <>
               <Button 

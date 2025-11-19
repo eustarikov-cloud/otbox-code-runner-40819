@@ -21,6 +21,7 @@ import Profile from "./pages/Profile";
 import Catalog from "./pages/Catalog";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin/email-test" element={<AdminEmailTest />} />
             <Route path="/admin/webhook-test" element={<WebhookTest />} />
+            <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
