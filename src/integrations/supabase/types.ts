@@ -90,49 +90,28 @@ export type Database = {
       }
       products: {
         Row: {
-          badge: string | null
-          category: string | null
           created_at: string | null
-          description: string | null
-          features: string[] | null
           file_path: string
-          icon_name: string | null
           id: string
-          image_url: string | null
           is_active: boolean | null
-          old_price_rub: number | null
           price_rub: number
           sku: string
           title: string
         }
         Insert: {
-          badge?: string | null
-          category?: string | null
           created_at?: string | null
-          description?: string | null
-          features?: string[] | null
           file_path: string
-          icon_name?: string | null
           id?: string
-          image_url?: string | null
           is_active?: boolean | null
-          old_price_rub?: number | null
           price_rub: number
           sku: string
           title: string
         }
         Update: {
-          badge?: string | null
-          category?: string | null
           created_at?: string | null
-          description?: string | null
-          features?: string[] | null
           file_path?: string
-          icon_name?: string | null
           id?: string
-          image_url?: string | null
           is_active?: boolean | null
-          old_price_rub?: number | null
           price_rub?: number
           sku?: string
           title?: string
