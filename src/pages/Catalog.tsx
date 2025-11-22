@@ -5,16 +5,19 @@ import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
-import { ShoppingCart, Package } from "lucide-react";
+import { ShoppingCart, Package, ChevronDown, CheckCircle2 } from "lucide-react";
 
 interface Product {
   id: string;
   sku: string;
   title: string;
   price_rub: number;
+  description: string | null;
+  features: string[] | null;
 }
 
 export default function Catalog() {
@@ -28,7 +31,7 @@ export default function Catalog() {
     const fetchProducts = async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("*")
+        .select("id, sku, title, price_rub, description, features")
         .eq("is_active", true);
 
       if (error) {
@@ -85,31 +88,64 @@ export default function Catalog() {
               <p className="text-muted-foreground">Товары пока недоступны</p>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-8 md:grid-cols-2">
               {products.map((product) => (
-                <Card key={product.id} className="hover:shadow-lg transition-shadow">
+                <Card key={product.id} className="hover:shadow-lg transition-all duration-300 border-border/50">
                   <CardHeader>
                     <div className="flex items-start gap-3">
-                      <Package className="w-8 h-8 text-primary mt-1" />
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <Package className="w-6 h-6 text-primary" />
+                      </div>
                       <div className="flex-1">
-                        <CardTitle className="text-xl mb-2">{product.title}</CardTitle>
-                        <CardDescription>SKU: {product.sku}</CardDescription>
+                        <CardTitle className="text-2xl mb-2">{product.title}</CardTitle>
+                        <CardDescription className="text-sm">Артикул: {product.sku}</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="text-3xl font-bold text-primary">
-                      {product.price_rub.toLocaleString()} ₽
+                  <CardContent className="space-y-6">
+                    {product.description && (
+                      <p className="text-muted-foreground leading-relaxed">
+                        {product.description}
+                      </p>
+                    )}
+                    
+                    {product.features && product.features.length > 0 && (
+                      <Collapsible>
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors group">
+                          <span className="font-semibold text-sm flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-primary" />
+                            Что входит в комплект? ({product.features.length} категорий)
+                          </span>
+                          <ChevronDown className="w-5 h-5 text-muted-foreground group-data-[state=open]:rotate-180 transition-transform" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-4 space-y-3">
+                          {product.features.map((feature, index) => (
+                            <div key={index} className="flex gap-3 items-start p-3 rounded-lg bg-accent/30 border border-border/30">
+                              <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                              <span className="text-sm leading-relaxed">{feature}</span>
+                            </div>
+                          ))}
+                        </CollapsibleContent>
+                      </Collapsible>
+                    )}
+
+                    <div className="pt-4 border-t border-border">
+                      <div className="flex items-baseline justify-between mb-4">
+                        <span className="text-muted-foreground">Цена:</span>
+                        <div className="text-3xl font-bold text-primary">
+                          {product.price_rub.toLocaleString()} ₽
+                        </div>
+                      </div>
+                      <Button
+                        onClick={() => handleBuy(product)}
+                        variant="default"
+                        size="lg"
+                        className="w-full"
+                      >
+                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        Купить
+                      </Button>
                     </div>
-                    <Button
-                      onClick={() => handleBuy(product)}
-                      variant="default"
-                      size="lg"
-                      className="w-full"
-                    >
-                      <ShoppingCart className="w-5 h-5 mr-2" />
-                      Купить
-                    </Button>
                   </CardContent>
                 </Card>
               ))}
