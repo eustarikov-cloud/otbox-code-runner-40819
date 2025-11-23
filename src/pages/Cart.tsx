@@ -6,14 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
 import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
-
 export default function Cart() {
-  const { items, removeItem, totalPrice } = useCart();
+  const {
+    items,
+    removeItem,
+    totalPrice
+  } = useCart();
   const navigate = useNavigate();
-
   if (items.length === 0) {
-    return (
-      <div className="min-h-screen flex flex-col">
+    return <div className="min-h-screen flex flex-col">
         <Header />
         <BackButton />
         <main className="flex-1 flex items-center justify-center px-4">
@@ -29,12 +30,9 @@ export default function Cart() {
           </div>
         </main>
         <Footer />
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col">
       <Header />
       <BackButton />
       <main className="flex-1 container mx-auto px-4 py-16">
@@ -42,29 +40,22 @@ export default function Cart() {
           <h1 className="text-4xl font-bold mb-8">Корзина</h1>
 
           <div className="space-y-4 mb-8">
-            {items.map((item) => (
-              <Card key={item.id}>
+            {items.map(item => <Card key={item.id}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1">
                       <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">SKU: {item.sku}</p>
+                      
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold">{item.price_rub.toLocaleString()} ₽</p>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeItem(item.id)}
-                      className="text-destructive hover:text-destructive"
-                    >
+                    <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive">
                       <Trash2 className="w-5 h-5" />
                     </Button>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
 
           <Card className="bg-muted/50">
@@ -77,21 +68,13 @@ export default function Cart() {
           </Card>
 
           <div className="mt-8 space-y-4">
-            <Button
-              onClick={() => navigate("/checkout")}
-              variant="default"
-              size="lg"
-              className="w-full"
-            >
+            <Button onClick={() => navigate("/checkout")} variant="default" size="lg" className="w-full">
               Перейти к оплате
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
 
             <div className="text-center">
-              <Link
-                to="/catalog"
-                className="text-sm text-muted-foreground hover:text-primary underline"
-              >
+              <Link to="/catalog" className="text-sm text-muted-foreground hover:text-primary underline">
                 Продолжить покупки
               </Link>
             </div>
@@ -99,6 +82,5 @@ export default function Cart() {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 }
