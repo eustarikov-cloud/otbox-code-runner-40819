@@ -1,7 +1,13 @@
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 export const CTA = () => {
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    element?.scrollIntoView({
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
       <h2 className="text-3xl font-bold text-gray-900 mb-3">
@@ -13,8 +19,8 @@ export const CTA = () => {
         Заполните реквизиты — и закройте требования ГИТ.
       </p>
 
-      <Button asChild variant="gradient" size="lg" className="hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]">
-        <Link to="/catalog">Купить комплект документов</Link>
+      <Button onClick={() => scrollToSection('pricing')} variant="gradient" size="lg" className="hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]">
+        Купить комплект документов
       </Button>
 
       <p className="mt-4 text-sm text-gray-500">

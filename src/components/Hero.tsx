@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import heroImage from "@/assets/hero-office.jpg";
@@ -34,8 +33,8 @@ export const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <Button asChild size="lg" variant="gradient" className="text-lg px-8 py-6 hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" aria-label="Перейти к каталогу комплектов">
-            <Link to="/catalog">Выбрать комплект</Link>
+          <Button onClick={() => scrollToSection('pricing')} size="lg" variant="gradient" className="text-lg px-8 py-6 hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" aria-label="Перейти к готовым комплектам">
+            Выбрать комплект
           </Button>
           <Button onClick={() => scrollToSection('samples')} size="lg" variant="outline" className="text-lg px-8 py-6 bg-white/10 hover:bg-white hover:text-black border-white text-white" aria-label="Перейти к образцам документов">
             Скачать образец
