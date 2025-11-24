@@ -70,13 +70,13 @@ export default function Catalog() {
       <Header />
       <BackButton />
       <main className="flex-1 container mx-auto px-4 py-24 mt-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-4">
               Каталог документов
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Выберите необходимый комплект документов по охране труда
+            <p className="text-lg text-muted-foreground">
+              Выберите необходимый комплект документов
             </p>
           </div>
 
@@ -89,72 +89,52 @@ export default function Catalog() {
               <p className="text-muted-foreground">Товары пока недоступны</p>
             </div>
           ) : (
-            <div className="grid gap-8 lg:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-2">
               {products.map((product) => (
-                <Card key={product.id} className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-border/40 bg-card/50 backdrop-blur">
-                  <CardHeader className="pb-4 space-y-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-3 flex-1">
-                        <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
-                          <Package className="w-7 h-7 text-primary" />
+                <Card key={product.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-primary/10">
+                          <Package className="w-5 h-5 text-primary" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <CardTitle className="text-2xl mb-2 leading-tight">{product.title}</CardTitle>
-                          <CardDescription className="text-xs font-medium">Артикул: {product.sku}</CardDescription>
-                        </div>
+                        <CardTitle className="text-xl">{product.title}</CardTitle>
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between gap-4 pt-2">
+                    <div className="flex items-center justify-between">
                       <div className="text-3xl font-bold text-primary">
                         {product.price_rub.toLocaleString()} ₽
                       </div>
                       <Button
                         onClick={() => handleBuy(product)}
-                        variant="default"
                         size="lg"
-                        className="px-8 shadow-lg hover:shadow-xl transition-all"
+                        className="px-6"
                       >
-                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        <ShoppingCart className="w-4 h-4 mr-2" />
                         Купить
                       </Button>
                     </div>
                   </CardHeader>
                   
-                  <CardContent className="space-y-6 pt-2">
+                  <CardContent className="space-y-4">
                     {product.description && (
-                      <div className="prose prose-sm max-w-none">
-                        <p className="text-muted-foreground leading-relaxed">
-                          {product.description}
-                        </p>
-                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {product.description}
+                      </p>
                     )}
                     
                     {product.features && product.features.length > 0 && (
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2 pb-2 border-b border-border/50">
-                          <CheckCircle2 className="w-5 h-5 text-primary" />
-                          <h3 className="font-semibold text-lg">
-                            Что входит в комплект
-                          </h3>
-                          <span className="ml-auto text-sm text-muted-foreground font-medium">
-                            {product.features.length} категорий
-                          </span>
-                        </div>
-                        
-                        <div className="grid gap-3">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-semibold">Что входит:</h4>
+                        <ul className="space-y-1.5">
                           {product.features.map((feature, index) => (
-                            <div 
-                              key={index} 
-                              className="flex gap-3 items-start p-4 rounded-xl bg-gradient-to-r from-accent/40 to-accent/20 border border-accent/30 hover:border-accent/50 transition-colors group"
-                            >
-                              <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                              <span className="text-sm leading-relaxed font-medium text-foreground/90">
-                                {feature}
-                              </span>
-                            </div>
+                            <li key={index} className="flex gap-2 text-sm">
+                              <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                              <span>{feature}</span>
+                            </li>
                           ))}
-                        </div>
+                        </ul>
                       </div>
                     )}
                   </CardContent>
