@@ -58,7 +58,6 @@ export const Pricing = () => {
       price_rub: pkg.price_rub,
     });
     toast.success(`${pkg.title} добавлен в корзину`);
-    navigate("/cart");
   };
 
   return (
