@@ -1,19 +1,23 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Building2, Sparkles } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
 
 const packages = [
   {
+    id: "office-package-id",
     icon: Building2,
     title: "Офис",
     description: "Бухгалтерия, кадровики, администрация",
     price: "3 500 ₽",
+    price_rub: 3500,
     oldPrice: "7 000 ₽",
     discount: "-50%",
     badge: "Хит продаж",
-    packageType: "office",
+    sku: "office-package",
     features: [
       "Инструкции по профессиям",
       "СУОТ, политика, приказы",
@@ -23,13 +27,15 @@ const packages = [
     ],
   },
   {
+    id: "salon-package-id",
     icon: Sparkles,
     title: "Салон красоты",
     description: "Парикмахеры, косметологи, мастера",
     price: "3 900 ₽",
+    price_rub: 3900,
     oldPrice: "7 800 ₽",
     discount: "-50%",
-    packageType: "salon",
+    sku: "salon-package",
     features: [
       "Инструкции по видам услуг",
       "Журналы, приказы, СИЗ",
@@ -41,8 +47,22 @@ const packages = [
 ];
 
 export const Pricing = () => {
+  const { addItem } = useCart();
+  const navigate = useNavigate();
+
+  const handleAddToCart = (pkg: typeof packages[0]) => {
+    addItem({
+      id: pkg.id,
+      sku: pkg.sku,
+      title: pkg.title,
+      price_rub: pkg.price_rub,
+    });
+    toast.success(`${pkg.title} добавлен в корзину`);
+    navigate("/cart");
+  };
+
   return (
-    <section className="py-20">
+    <section id="pricing" className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Готовые комплекты</h2>
@@ -92,8 +112,13 @@ export const Pricing = () => {
                   ))}
                 </ul>
 
-                <Button asChild className="w-full hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" variant="gradient" size="lg">
-                  <Link to="/catalog">Заказать →</Link>
+                <Button 
+                  onClick={() => handleAddToCart(pkg)}
+                  className="w-full hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]" 
+                  variant="gradient" 
+                  size="lg"
+                >
+                  Заказать →
                 </Button>
               </Card>
             );
