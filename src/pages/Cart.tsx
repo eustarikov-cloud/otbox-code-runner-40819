@@ -42,15 +42,19 @@ export default function Cart() {
           <div className="space-y-4 mb-8">
             {items.map(item => <Card key={item.id}>
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
-                      
+                      <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
+                      {item.description && (
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {item.description}
+                        </p>
+                      )}
                     </div>
-                    <div className="text-right">
+                    <div className="text-right flex-shrink-0">
                       <p className="text-2xl font-bold">{item.price_rub.toLocaleString()} ₽</p>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive">
+                    <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive flex-shrink-0">
                       <Trash2 className="w-5 h-5" />
                     </Button>
                   </div>

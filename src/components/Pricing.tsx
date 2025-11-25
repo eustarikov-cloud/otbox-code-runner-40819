@@ -8,16 +8,16 @@ import { toast } from "sonner";
 
 const packages = [
   {
-    id: "office-package-id",
+    sku: "office-package",
     icon: Building2,
     title: "Офис",
-    description: "Бухгалтерия, кадровики, администрация",
+    subtitle: "Бухгалтерия, кадровики, администрация",
+    description: "Готовый комплект профессионально разработанных документов по охране труда для работников офисов. 97 полностью отредактированных шаблонов в формате Word с учетом специфики работы.",
     price: "3 500 ₽",
     price_rub: 3500,
     oldPrice: "7 000 ₽",
     discount: "-50%",
     badge: "Хит продаж",
-    sku: "office-package",
     features: [
       "Инструкции по профессиям",
       "СУОТ, политика, приказы",
@@ -27,15 +27,15 @@ const packages = [
     ],
   },
   {
-    id: "salon-package-id",
+    sku: "salon-package",
     icon: Sparkles,
     title: "Салон красоты",
-    description: "Парикмахеры, косметологи, мастера",
+    subtitle: "Парикмахеры, косметологи, мастера",
+    description: "Профессиональный комплект документов по охране труда для салонов красоты. Полный набор шаблонов в формате Word для парикмахерских, косметологических и маникюрных услуг.",
     price: "3 900 ₽",
     price_rub: 3900,
     oldPrice: "7 800 ₽",
     discount: "-50%",
-    sku: "salon-package",
     features: [
       "Инструкции по видам услуг",
       "Журналы, приказы, СИЗ",
@@ -52,9 +52,10 @@ export const Pricing = () => {
 
   const handleAddToCart = (pkg: typeof packages[0]) => {
     addItem({
-      id: pkg.id,
+      id: pkg.sku,
       sku: pkg.sku,
       title: pkg.title,
+      description: pkg.description,
       price_rub: pkg.price_rub,
     });
     toast.success(`${pkg.title} добавлен в корзину`);
@@ -93,7 +94,7 @@ export const Pricing = () => {
                 </Badge>
 
                 <h3 className="text-2xl font-bold mb-2">{pkg.title}</h3>
-                <p className="text-muted-foreground mb-6">{pkg.description}</p>
+                <p className="text-muted-foreground mb-6">{pkg.subtitle}</p>
 
                 <div className="mb-6">
                   <div className="flex items-baseline gap-2">
