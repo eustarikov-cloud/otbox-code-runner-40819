@@ -51,9 +51,10 @@ export default function Catalog() {
 
   const handleBuy = (product: Product) => {
     addItem({
-      id: product.id,
+      id: product.sku,
       sku: product.sku,
       title: product.title,
+      description: product.description || undefined,
       price_rub: product.price_rub,
     });
     

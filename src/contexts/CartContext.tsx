@@ -4,6 +4,7 @@ interface CartItem {
   id: string;
   sku: string;
   title: string;
+  description?: string;
   price_rub: number;
   quantity: number;
 }
@@ -25,10 +26,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = (item: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
+      const existing = prev.find((i) => i.sku === item.sku);
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          i.sku === item.sku ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
       return [...prev, { ...item, quantity: 1 }];
