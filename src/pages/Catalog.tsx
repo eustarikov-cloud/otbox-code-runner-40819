@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
@@ -24,7 +23,6 @@ export default function Catalog() {
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -62,8 +60,6 @@ export default function Catalog() {
       title: "Товар добавлен в корзину",
       description: product.title,
     });
-    
-    navigate("/cart");
   };
 
   return (
