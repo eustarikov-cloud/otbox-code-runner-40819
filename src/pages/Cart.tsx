@@ -44,7 +44,14 @@ export default function Cart() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="font-semibold text-lg">{item.title}</h3>
+                        {item.quantity > 1 && (
+                          <span className="text-sm font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                            × {item.quantity}
+                          </span>
+                        )}
+                      </div>
                       {item.description && (
                         <p className="text-sm text-muted-foreground leading-relaxed">
                           {item.description}
@@ -52,7 +59,10 @@ export default function Cart() {
                       )}
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="text-2xl font-bold">{item.price_rub.toLocaleString()} ₽</p>
+                      <p className="text-2xl font-bold">{(item.price_rub * item.quantity).toLocaleString()} ₽</p>
+                      {item.quantity > 1 && (
+                        <p className="text-sm text-muted-foreground">{item.price_rub.toLocaleString()} ₽ / шт.</p>
+                      )}
                     </div>
                     <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive flex-shrink-0">
                       <Trash2 className="w-5 h-5" />
