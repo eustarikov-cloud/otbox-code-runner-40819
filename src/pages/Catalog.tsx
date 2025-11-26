@@ -62,8 +62,6 @@ export default function Catalog() {
       title: "Товар добавлен в корзину",
       description: product.title,
     });
-    
-    navigate("/cart");
   };
 
   return (

@@ -5,11 +5,12 @@ import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
-import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Trash2, ShoppingBag, ArrowRight, Plus, Minus } from "lucide-react";
 export default function Cart() {
   const {
     items,
     removeItem,
+    updateQuantity,
     totalPrice
   } = useCart();
   const navigate = useNavigate();
@@ -51,12 +52,36 @@ export default function Cart() {
                         </p>
                       )}
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-2xl font-bold">{item.price_rub.toLocaleString()} ₽</p>
+                    <div className="flex items-center gap-4 flex-shrink-0">
+                      <div className="flex items-center gap-2 border rounded-lg p-1">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        >
+                          <Minus className="w-4 h-4" />
+                        </Button>
+                        <span className="w-8 text-center font-medium">{item.quantity}</span>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <div className="text-right min-w-[100px]">
+                        <p className="text-2xl font-bold">{(item.price_rub * item.quantity).toLocaleString()} ₽</p>
+                        {item.quantity > 1 && (
+                          <p className="text-xs text-muted-foreground">{item.price_rub.toLocaleString()} ₽ × {item.quantity}</p>
+                        )}
+                      </div>
+                      <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive">
+                        <Trash2 className="w-5 h-5" />
+                      </Button>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive flex-shrink-0">
-                      <Trash2 className="w-5 h-5" />
-                    </Button>
                   </div>
                 </CardContent>
               </Card>)}
