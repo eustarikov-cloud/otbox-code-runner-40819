@@ -5,11 +5,13 @@ import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
-import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Trash2, ShoppingBag, ArrowRight, Plus, Minus } from "lucide-react";
+
 export default function Cart() {
   const {
     items,
     removeItem,
+    updateQuantity,
     totalPrice
   } = useCart();
   const navigate = useNavigate();
@@ -44,29 +46,43 @@ export default function Cart() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-semibold text-lg">{item.title}</h3>
-                        {item.quantity > 1 && (
-                          <span className="text-sm font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                            × {item.quantity}
-                          </span>
-                        )}
-                      </div>
+                      <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
                       {item.description && (
                         <p className="text-sm text-muted-foreground leading-relaxed">
                           {item.description}
                         </p>
                       )}
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-2xl font-bold">{(item.price_rub * item.quantity).toLocaleString()} ₽</p>
-                      {item.quantity > 1 && (
-                        <p className="text-sm text-muted-foreground">{item.price_rub.toLocaleString()} ₽ / шт.</p>
-                      )}
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="w-8 text-center font-medium">{item.quantity}</span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <div className="text-right min-w-[100px]">
+                        <p className="text-xl font-bold">{(item.price_rub * item.quantity).toLocaleString()} ₽</p>
+                        {item.quantity > 1 && (
+                          <p className="text-xs text-muted-foreground">{item.price_rub.toLocaleString()} ₽ / шт.</p>
+                        )}
+                      </div>
+                      <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive">
+                        <Trash2 className="w-5 h-5" />
+                      </Button>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive flex-shrink-0">
-                      <Trash2 className="w-5 h-5" />
-                    </Button>
                   </div>
                 </CardContent>
               </Card>)}
