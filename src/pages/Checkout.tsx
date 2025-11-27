@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
@@ -15,10 +14,6 @@ import { z } from "zod";
 
 const checkoutSchema = z.object({
   email: z.string().email({ message: "Некорректный email адрес" }),
-  name: z.string().optional(),
-  consentGiven: z.boolean().refine((val) => val === true, {
-    message: "Необходимо согласие на обработку персональных данных",
-  }),
 });
 
 export default function Checkout() {
@@ -28,8 +23,6 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
-    name: "",
-    consentGiven: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -49,7 +42,7 @@ export default function Checkout() {
       // Создаем заказ для каждого товара в корзине
       for (const item of items) {
         const { error: insertError } = await supabase.from("orders").insert({
-          name: validatedData.name || "Не указано",
+          name: "Не указано",
           email: validatedData.email,
           phone: "Не указан",
           package: item.sku,
@@ -86,7 +79,7 @@ export default function Checkout() {
           body: {
             orderId: paymentData.paymentId || "unknown",
             email: validatedData.email,
-            name: validatedData.name || "Не указано",
+            name: "Не указано",
             packageName: items.map((i) => i.title).join(", "),
             price: totalPrice,
           },
@@ -168,72 +161,29 @@ export default function Checkout() {
 
           <Card>
             <CardContent className="pt-6">
-              <div className="text-center mb-4">
-                <Link to="/login" className="text-sm text-muted-foreground hover:text-primary underline">
-                  У меня уже есть аккаунт – войти
-                </Link>
-              </div>
-
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className={errors.email ? "border-destructive" : ""}
-                    required
-                  />
-                  {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-                  <p className="text-xs text-muted-foreground">
-                    На этот email будут отправлены файлы после оплаты
+                <div className="space-y-4">
+                  <p className="text-center text-muted-foreground">
+                    Укажите вашу электронную почту для получения доступа к инструкциям
                   </p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="name">Имя (необязательно)</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Иван Иванов"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <Checkbox
-                      id="consent"
-                      checked={formData.consentGiven}
-                      onCheckedChange={(checked) =>
-                        setFormData({ ...formData, consentGiven: checked === true })
-                      }
-                      className={errors.consentGiven ? "border-destructive" : ""}
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Ваша электронная почта</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className={errors.email ? "border-destructive" : ""}
+                      required
                     />
-                    <div className="flex-1">
-                      <Label htmlFor="consent" className="text-sm font-normal cursor-pointer">
-                        Я соглашаюсь на{" "}
-                        <Link
-                          to="/personal-data-consent"
-                          className="text-primary hover:underline"
-                          target="_blank"
-                        >
-                          обработку персональных данных
-                        </Link>{" "}
-                        *
-                      </Label>
-                      {errors.consentGiven && (
-                        <p className="text-sm text-destructive mt-1">{errors.consentGiven}</p>
-                      )}
-                    </div>
+                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                   </div>
                 </div>
 
                 <Button type="submit" size="lg" className="w-full" disabled={loading}>
-                  {loading ? "Обработка..." : "Оплатить"}
+                  {loading ? "Обработка..." : "Перейти к оплате"}
                 </Button>
               </form>
             </CardContent>
