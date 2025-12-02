@@ -1,142 +1,106 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Privacy = () => {
+  const navigate = useNavigate();
+
+  const handleAccept = () => {
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen">
       <Header />
       <BackButton />
       <main className="pt-24 pb-12">
         <article className="container mx-auto px-4 max-w-4xl">
-          <h1 className="text-4xl font-bold mb-8">Политика конфиденциальности</h1>
-          <p className="text-lg text-muted-foreground mb-8">(в отношении обработки персональных данных)</p>
+          <h1 className="text-4xl font-bold mb-8">Политика обработки персональных данных</h1>
           
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">1. Общие положения</h2>
-            <p className="text-muted-foreground mb-4">
-              1.1. Настоящая Политика конфиденциальности разработана в соответствии с требованиями Федерального закона № 152-ФЗ «О персональных данных» и определяет порядок обработки персональных данных и меры по их защите.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              1.2. Продавец — Стариков Евгений Викторович, физическое лицо, применяющее специальный налоговый режим «Налог на профессиональный доход» (самозанятый), ИНН 471303641804, (далее — «Оператор», «Продавец») — обеспечивает защиту прав и свобод граждан при обработке их персональных данных.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              1.3. Использование сайта https://ot-box.ru означает безоговорочное согласие Пользователя с настоящей Политикой и условиями обработки персональных данных.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">2. Персональные данные, которые собираются</h2>
-            <p className="text-muted-foreground mb-4">
-              2.1. Продавец может получать от Пользователя следующие данные:
-            </p>
-            <ul className="list-disc list-inside text-muted-foreground mb-4 ml-4">
-              <li>имя и фамилию;</li>
-              <li>адрес электронной почты (e-mail);</li>
-              <li>номер телефона;</li>
-              <li>сведения о заказах и платежах;</li>
-              <li>технические данные (IP-адрес, cookies, сведения о браузере и операционной системе).</li>
-            </ul>
-            <p className="text-muted-foreground mb-4">
-              2.2. Эти данные предоставляются Пользователем добровольно при оформлении заказа, подписке на рассылку или заполнении формы обратной связи.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">3. Цели обработки персональных данных</h2>
-            <p className="text-muted-foreground mb-4">Персональные данные обрабатываются для:</p>
-            <ul className="list-disc list-inside text-muted-foreground mb-4 ml-4">
-              <li>оформления и исполнения договоров купли-продажи цифровых товаров;</li>
-              <li>доставки ссылок на электронные файлы;</li>
-              <li>обратной связи с Покупателем;</li>
-              <li>направления уведомлений, счетов и информации о заказе;</li>
-              <li>ведения бухгалтерского и налогового учёта;</li>
-              <li>улучшения работы сайта и качества обслуживания.</li>
-            </ul>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">4. Правовые основания обработки</h2>
-            <p className="text-muted-foreground mb-4">
-              4.1. Основанием обработки персональных данных является согласие Пользователя, выраженное через заполнение форм на сайте и оплату заказа.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              4.2. Обработка данных осуществляется в соответствии с Гражданским кодексом РФ, Федеральным законом № 152-ФЗ и иными нормативными актами Российской Федерации.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">5. Условия обработки и хранения персональных данных</h2>
-            <p className="text-muted-foreground mb-4">
-              5.1. Продавец принимает все необходимые организационные и технические меры для защиты персональных данных от несанкционированного доступа, уничтожения, изменения, блокирования или распространения.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              5.2. Данные хранятся в электронном виде и используются исключительно для целей, указанных в разделе 3.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              5.3. Срок хранения персональных данных — до достижения целей обработки или отзыва согласия Пользователя.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">6. Передача персональных данных третьим лицам</h2>
-            <p className="text-muted-foreground mb-4">
-              6.1. Продавец не передаёт персональные данные третьим лицам, за исключением случаев, предусмотренных законодательством РФ.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              6.2. Передача данных возможна только:
-            </p>
-            <ul className="list-disc list-inside text-muted-foreground mb-4 ml-4">
-              <li>по запросу государственных органов в рамках их полномочий;</li>
-              <li>платёжным системам — исключительно для выполнения заказа;</li>
-              <li>подрядчикам, обеспечивающим техническое функционирование сайта (хостинг, e-mail-сервисы) при условии соблюдения ими конфиденциальности.</li>
-            </ul>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">7. Права пользователя</h2>
-            <p className="text-muted-foreground mb-4">7.1. Пользователь имеет право:</p>
-            <ul className="list-disc list-inside text-muted-foreground mb-4 ml-4">
-              <li>получать информацию о своих персональных данных;</li>
-              <li>требовать их уточнения, блокирования или уничтожения;</li>
-              <li>отозвать согласие на обработку, направив запрос на e-mail: info@ot-box.ru .</li>
-            </ul>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">8. Использование файлов cookies</h2>
-            <p className="text-muted-foreground mb-4">
-              8.1. На сайте могут использоваться файлы cookies для повышения удобства пользования.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              8.2. Пользователь вправе самостоятельно отключить использование cookies в настройках браузера.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">9. Изменение политики конфиденциальности</h2>
-            <p className="text-muted-foreground mb-4">
-              9.1. Продавец имеет право вносить изменения в настоящую Политику без предварительного уведомления Пользователей.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              9.2. Новая редакция вступает в силу с момента её размещения на сайте.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">10. Контактная информация</h2>
-            <div className="bg-muted/50 p-6 rounded-lg">
-              <p className="font-semibold mb-2">Оператор (Продавец):</p>
-              <p className="text-muted-foreground mb-1">Стариков Евгений Викторович</p>
-              <p className="text-muted-foreground mb-1">ИНН 471303641804</p>
-              <p className="text-muted-foreground mb-1">E-mail: info@ot-box.ru</p>
-              <p className="text-muted-foreground mb-1">Сайт: https://ot-box.ru</p>
+            <h2 className="text-2xl font-semibold mb-4">Общие положения</h2>
+            <div className="bg-muted/50 p-6 rounded-lg mb-4">
+              <p className="text-muted-foreground mb-2">
+                <strong>Оператор персональных данных:</strong> Стариков Евгений Викторович
+              </p>
+              <p className="text-muted-foreground mb-2">
+                <strong>Email:</strong> info@ot-box.ru
+              </p>
+              <p className="text-muted-foreground">
+                <strong>Сайт:</strong> ot-box.ru
+              </p>
             </div>
           </section>
 
-          <p className="text-sm text-muted-foreground mt-8">
-            Дата последнего обновления: 19 октября 2025 г.
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Какие данные мы собираем</h2>
+            <p className="text-muted-foreground mb-4">
+              Сайт собирает исключительно адрес электронной почты (email) пользователя.
+            </p>
+            <p className="text-muted-foreground mb-4">
+              Согласно решению Верховного суда Российской Федерации от 21 июля 2023 года (дело № 305-ES23-12160), адрес электронной почты сам по себе не является персональными данными, если он не связан с другими идентификаторами.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Для чего используется email</h2>
+            <p className="text-muted-foreground mb-4">Email используется исключительно для:</p>
+            <ul className="list-disc list-inside text-muted-foreground mb-4 ml-4">
+              <li>Отправки ссылки на доступ к купленным инструкциям</li>
+              <li>Отправки чеков и служебной информации, связанной с покупкой</li>
+            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Хранение данных</h2>
+            <p className="text-muted-foreground mb-4">
+              Email адреса не сохраняются в нашей системе длительно. Данные обработки платежа и отправки товара находятся под ответственностью платёжных систем (Яндекс.Касса, TPay, Сбербанк и других).
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Аналитика</h2>
+            <p className="text-muted-foreground mb-4">
+              На сайте используется Яндекс Метрика для анализа посещений. При этом не собираются персональные данные - только анонимная статистика посещений.
+            </p>
+            <p className="text-muted-foreground mb-4">
+              Вы можете отключить сбор аналитических данных через баннер согласия с cookies.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Ваши права</h2>
+            <ul className="list-disc list-inside text-muted-foreground mb-4 ml-4">
+              <li>Вы можете запросить удаление вашего email из наших систем</li>
+              <li>Вы можете отказаться от получения писем</li>
+            </ul>
+            <p className="text-muted-foreground mb-4">
+              <strong>Для связи:</strong> info@ot-box.ru
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Изменения в политике</h2>
+            <p className="text-muted-foreground mb-4">
+              Мы оставляем за собой право изменять эту политику. Изменения вступают в силу после размещения на сайте.
+            </p>
+          </section>
+
+          <p className="text-sm text-muted-foreground mt-8 mb-8">
+            Дата последнего обновления: 2 декабря 2025 г.
           </p>
+
+          <div className="flex justify-center mt-12">
+            <Button 
+              onClick={handleAccept}
+              size="lg"
+              className="min-w-[200px]"
+            >
+              Принять и закрыть
+            </Button>
+          </div>
         </article>
       </main>
       <Footer />
