@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { CookieConsent } from "@/components/CookieConsent";
+import YandexMetrika from "@/components/YandexMetrika";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Privacy from "./pages/Privacy";
@@ -33,6 +34,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <CookieConsent />
+        <YandexMetrika />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
