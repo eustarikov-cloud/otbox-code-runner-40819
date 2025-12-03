@@ -57,7 +57,7 @@ const PersonalDataConsent = () => {
               <p className="text-muted-foreground mb-4 leading-relaxed">
                 Срок действия согласия является неограниченным. Вы можете в любой момент отозвать 
                 настоящее согласие, направив письменное уведомление на адрес электронной почты: 
-                <strong> info@ot-box.ru</strong> с пометкой «Отзыв согласия на обработку персональных данных».
+                <strong> ot-box@mail.ru</strong> с пометкой «Отзыв согласия на обработку персональных данных».
               </p>
             </section>
 
@@ -91,7 +91,7 @@ const PersonalDataConsent = () => {
               <div className="text-muted-foreground space-y-1">
                 <p><strong>Оператор:</strong> Стариков Евгений Викторович</p>
                 <p><strong>ИНН:</strong> 471303641804</p>
-                <p><strong>Email:</strong> info@ot-box.ru</p>
+                <p><strong>Email:</strong> ot-box@mail.ru</p>
                 <p><strong>Сайт:</strong> https://ot-box.ru</p>
               </div>
             </section>

@@ -59,7 +59,7 @@ export default function ThankYou() {
           <div className="bg-muted p-6 rounded-lg text-sm space-y-3">
             <p className="font-medium">Если письма нет — проверьте спам.</p>
             <p className="text-muted-foreground">
-              Возникли вопросы? Напишите нам: <a href="mailto:support@otbox.ru" className="underline">support@otbox.ru</a>
+              Возникли вопросы? Напишите нам: <a href="mailto:ot-box@mail.ru" className="underline">ot-box@mail.ru</a>
             </p>
           </div>
 
