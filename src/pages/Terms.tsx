@@ -27,7 +27,7 @@ const Terms = () => {
               <p className="font-semibold mb-2">Продавец:</p>
               <p className="text-muted-foreground mb-1">Стариков Евгений Викторович, физическое лицо, применяющее специальный налоговый режим «Налог на профессиональный доход» (самозанятый), зарегистрированный в Федеральной налоговой службе РФ.</p>
               <p className="text-muted-foreground mb-1">ИНН: 471303641804</p>
-              <p className="text-muted-foreground mb-1">E-mail: info@ot-box.ru</p>
+              <p className="text-muted-foreground mb-1">E-mail: ot-box@mail.ru</p>
               <p className="text-muted-foreground italic mt-2">Продавец не является плательщиком НДС на основании п. 70 ст. 217 Налогового кодекса РФ.</p>
             </div>
           </section>
@@ -167,7 +167,7 @@ const Terms = () => {
               <p className="font-semibold mb-2">Продавец:</p>
               <p className="text-muted-foreground mb-1">Стариков Евгений Викторович</p>
               <p className="text-muted-foreground mb-1">ИНН: 471303641804</p>
-              <p className="text-muted-foreground mb-1">E-mail: info@ot-box.ru</p>
+              <p className="text-muted-foreground mb-1">E-mail: ot-box@mail.ru</p>
               <p className="text-muted-foreground mb-1">Сайт: https://ot-box.ru</p>
             </div>
           </section>

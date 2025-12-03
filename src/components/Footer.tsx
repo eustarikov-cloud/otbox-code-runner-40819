@@ -54,7 +54,7 @@ export const Footer = () => {
           <div>
             <h3 className="font-semibold mb-4">Контакты</h3>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-              <p>Email: info@otbox.ru</p>
+              <p>Email: ot-box@mail.ru</p>
               <p>Пн-Пт: 9:00 - 18:00 (МСК)</p>
             </div>
           </div>

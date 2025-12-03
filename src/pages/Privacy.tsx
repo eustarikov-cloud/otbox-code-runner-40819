@@ -26,7 +26,7 @@ const Privacy = () => {
                 <strong>Оператор персональных данных:</strong> Стариков Евгений Викторович
               </p>
               <p className="text-muted-foreground mb-2">
-                <strong>Email:</strong> info@ot-box.ru
+                <strong>Email:</strong> ot-box@mail.ru
               </p>
               <p className="text-muted-foreground">
                 <strong>Сайт:</strong> ot-box.ru
@@ -77,7 +77,7 @@ const Privacy = () => {
               <li>Вы можете отказаться от получения писем</li>
             </ul>
             <p className="text-muted-foreground mb-4">
-              <strong>Для связи:</strong> info@ot-box.ru
+              <strong>Для связи:</strong> ot-box@mail.ru
             </p>
           </section>
 

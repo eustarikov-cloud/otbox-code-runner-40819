@@ -115,7 +115,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-2">Email</h3>
-                    <p className="text-muted-foreground">info@otbox.ru</p>
+                    <p className="text-muted-foreground">ot-box@mail.ru</p>
                     <p className="text-sm text-muted-foreground mt-1">
                       Ответим в течение 24 часов
                     </p>
