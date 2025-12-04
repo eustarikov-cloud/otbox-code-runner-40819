@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 const Contact = () => {
   const {
     toast
@@ -120,7 +121,7 @@ const Contact = () => {
                   Перед тем как написать, проверьте наш раздел FAQ — возможно, ответ на ваш вопрос уже там!
                 </p>
                 <Button variant="outline" asChild>
-                  <a href="/#faq">Перейти к FAQ</a>
+                  <Link to="/#faq">Перейти в FAQ</Link>
                 </Button>
               </Card>
             </div>
