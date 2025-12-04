@@ -28,16 +28,25 @@ export const Header = () => {
           <span className="text-xl font-bold">OT-Box</span>
         </div>
         
-        <nav className="hidden md:flex items-center gap-8">
-          <Link to="/catalog" className="text-sm hover:text-primary transition-colors">
-            Каталог
-          </Link>
+        <nav className="hidden md:flex items-center gap-6">
+          <button onClick={() => scrollToSection('pricing')} className="text-sm hover:text-primary transition-colors">
+            Комплекты
+          </button>
+          <button onClick={() => scrollToSection('samples')} className="text-sm hover:text-primary transition-colors">
+            Что входит
+          </button>
           <button onClick={() => scrollToSection('how-it-works')} className="text-sm hover:text-primary transition-colors">
             Как работает
           </button>
           <button onClick={() => scrollToSection('faq')} className="text-sm hover:text-primary transition-colors">
             Вопросы
           </button>
+          <Link to="/catalog" className="text-sm hover:text-primary transition-colors">
+            Каталог
+          </Link>
+          <Link to="/contact" className="text-sm hover:text-primary transition-colors">
+            Контакты
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
