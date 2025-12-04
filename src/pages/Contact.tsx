@@ -9,31 +9,32 @@ import { Label } from "@/components/ui/label";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-
 const Contact = () => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [formData, setFormData] = useState({
     email: "",
-    message: "",
+    message: ""
   });
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     toast({
       title: "Сообщение отправлено!",
-      description: "Мы свяжемся с вами в ближайшее время.",
+      description: "Мы свяжемся с вами в ближайшее время."
     });
-    
-    setFormData({ email: "", message: "" });
+    setFormData({
+      email: "",
+      message: ""
+    });
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       <Header />
       <BackButton />
       <main className="pt-24 pb-12">
@@ -49,29 +50,12 @@ const Contact = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    placeholder="Ваш email для ответа"
-                    className="mt-2"
-                  />
+                  <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required placeholder="Ваш email для ответа" className="mt-2" />
                 </div>
                 
                 <div>
                   <Label htmlFor="message">Сообщение *</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    placeholder="Опишите ваш вопрос"
-                    className="mt-2 min-h-[150px]"
-                  />
+                  <Textarea id="message" name="message" value={formData.message} onChange={handleChange} required placeholder="Опишите ваш вопрос" className="mt-2 min-h-[150px]" />
                 </div>
                 
                 <Button type="submit" size="lg" className="w-full">
@@ -107,7 +91,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-2">Телефон</h3>
-                    <p className="text-muted-foreground">+7 (XXX) XXX-XX-XX</p>
+                    <p className="text-muted-foreground">+7 (985) 070-77-53</p>
                     <p className="text-sm text-muted-foreground mt-1">
                       Пн-Пт: 9:00 - 18:00 (МСК)
                     </p>
@@ -144,8 +128,6 @@ const Contact = () => {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Contact;
