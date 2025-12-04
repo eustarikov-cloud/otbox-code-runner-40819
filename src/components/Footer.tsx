@@ -60,6 +60,12 @@ export const Footer = () => {
           </div>
         </div>
         
+        <div className="mb-8 p-4 bg-muted/50 rounded-lg">
+          <p className="text-sm text-muted-foreground text-center">
+            Покупка без обязательной регистрации. Собираем минимум данных для соблюдения 152-ФЗ.
+          </p>
+        </div>
+        
         <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-sm text-muted-foreground">
             © 2025 OT-Box. Все права защищены.
