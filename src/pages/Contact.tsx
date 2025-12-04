@@ -13,9 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 const Contact = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
-    subject: "",
     message: "",
   });
 
@@ -27,7 +25,7 @@ const Contact = () => {
       description: "Мы свяжемся с вами в ближайшее время.",
     });
     
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setFormData({ email: "", message: "" });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -50,19 +48,6 @@ const Contact = () => {
               <h2 className="text-2xl font-semibold mb-6">Отправить сообщение</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <Label htmlFor="name">Ваше имя *</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    placeholder="Иван Иванов"
-                    className="mt-2"
-                  />
-                </div>
-                
-                <div>
                   <Label htmlFor="email">Email *</Label>
                   <Input
                     id="email"
@@ -71,19 +56,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="ivan@example.com"
-                    className="mt-2"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="subject">Тема</Label>
-                  <Input
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    placeholder="Вопрос по документам"
+                    placeholder="Ваш email для ответа"
                     className="mt-2"
                   />
                 </div>
@@ -96,7 +69,7 @@ const Contact = () => {
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    placeholder="Опишите ваш вопрос..."
+                    placeholder="Опишите ваш вопрос"
                     className="mt-2 min-h-[150px]"
                   />
                 </div>
@@ -104,6 +77,10 @@ const Contact = () => {
                 <Button type="submit" size="lg" className="w-full">
                   Отправить сообщение
                 </Button>
+                
+                <p className="text-xs text-muted-foreground text-center">
+                  Мы собираем только ваш email и текст сообщения, чтобы ответить на запрос. Лишние персональные данные не запрашиваем в соответствии с 152‑ФЗ.
+                </p>
               </form>
             </Card>
 
