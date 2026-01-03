@@ -86,6 +86,13 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "orders_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products_catalog"
+            referencedColumns: ["id"]
+          },
         ]
       }
       products: {
@@ -166,6 +173,27 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          created_at: string
+          endpoint: string
+          id: string
+          ip_address: string
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          id?: string
+          ip_address: string
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          id?: string
+          ip_address?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -189,9 +217,66 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      products_catalog: {
+        Row: {
+          badge: string | null
+          category: string | null
+          created_at: string | null
+          description: string | null
+          features: string[] | null
+          icon_name: string | null
+          id: string | null
+          image_url: string | null
+          is_active: boolean | null
+          old_price_rub: number | null
+          price_rub: number | null
+          sku: string | null
+          title: string | null
+        }
+        Insert: {
+          badge?: string | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          features?: string[] | null
+          icon_name?: string | null
+          id?: string | null
+          image_url?: string | null
+          is_active?: boolean | null
+          old_price_rub?: number | null
+          price_rub?: number | null
+          sku?: string | null
+          title?: string | null
+        }
+        Update: {
+          badge?: string | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          features?: string[] | null
+          icon_name?: string | null
+          id?: string | null
+          image_url?: string | null
+          is_active?: boolean | null
+          old_price_rub?: number | null
+          price_rub?: number | null
+          sku?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          p_endpoint: string
+          p_ip_address: string
+          p_max_requests?: number
+          p_window_minutes?: number
+        }
+        Returns: boolean
+      }
+      cleanup_old_rate_limits: { Args: never; Returns: undefined }
       get_order_statistics: {
         Args: never
         Returns: {
