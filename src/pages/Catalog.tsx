@@ -26,10 +26,10 @@ export default function Catalog() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      // Use products_catalog view to avoid exposing file_path
       const { data, error } = await supabase
-        .from("products")
-        .select("id, sku, title, price_rub, description, features")
-        .eq("is_active", true);
+        .from("products_catalog")
+        .select("id, sku, title, price_rub, description, features");
 
       if (error) {
         if (import.meta.env.DEV) {

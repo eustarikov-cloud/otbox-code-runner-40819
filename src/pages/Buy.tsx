@@ -31,10 +31,10 @@ export default function Buy() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      // Use products_catalog view to avoid exposing file_path
       const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("is_active", true);
+        .from("products_catalog")
+        .select("id, sku, title, price_rub");
 
       if (error) {
         if (import.meta.env.DEV) {
