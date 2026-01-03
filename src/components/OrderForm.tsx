@@ -124,7 +124,9 @@ export const OrderForm = () => {
         });
         console.log('Order confirmation email sent');
       } catch (emailError) {
-        console.error('Failed to send confirmation email:', emailError);
+        if (import.meta.env.DEV) {
+          console.error('Failed to send confirmation email:', emailError);
+        }
         // Не блокируем процесс оплаты, если email не отправился
       }
 
@@ -163,7 +165,7 @@ export const OrderForm = () => {
       } else {
         toast({
           title: "Ошибка",
-          description: error.message || "Не удалось создать заказ",
+          description: "Не удалось создать заказ. Попробуйте позже.",
           variant: "destructive",
         });
       }

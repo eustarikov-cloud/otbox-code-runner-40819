@@ -32,7 +32,9 @@ export default function Catalog() {
         .eq("is_active", true);
 
       if (error) {
-        console.error("Error fetching products:", error);
+        if (import.meta.env.DEV) {
+          console.error("Error fetching products:", error);
+        }
         toast({
           title: "Ошибка",
           description: "Не удалось загрузить каталог",

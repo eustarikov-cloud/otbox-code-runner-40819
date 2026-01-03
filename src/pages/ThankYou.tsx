@@ -7,13 +7,20 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Mail, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+// Validate payment_id format (YooKassa format: alphanumeric with dashes, 20-50 chars)
+const isValidPaymentId = (id: string | null): id is string => {
+  if (!id) return false;
+  return /^[a-zA-Z0-9\-]{20,50}$/.test(id);
+};
+
 export default function ThankYou() {
   const [searchParams] = useSearchParams();
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const paymentId = searchParams.get("payment_id");
 
   useEffect(() => {
-    if (paymentId) {
+    // Validate payment_id before using in query
+    if (isValidPaymentId(paymentId)) {
       const fetchOrder = async () => {
         const { data } = await supabase
           .from("orders")

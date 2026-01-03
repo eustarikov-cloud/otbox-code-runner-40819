@@ -85,7 +85,9 @@ export default function Checkout() {
           },
         });
       } catch (emailError) {
-        console.error("Failed to send confirmation email:", emailError);
+        if (import.meta.env.DEV) {
+          console.error("Failed to send confirmation email:", emailError);
+        }
       }
 
       clearCart();
@@ -122,7 +124,7 @@ export default function Checkout() {
       } else {
         toast({
           title: "Ошибка",
-          description: error.message || "Не удалось создать заказ",
+          description: "Не удалось создать заказ. Попробуйте позже.",
           variant: "destructive",
         });
       }
