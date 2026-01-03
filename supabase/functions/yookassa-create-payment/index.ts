@@ -20,6 +20,32 @@ Deno.serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Get client IP for rate limiting
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+                     req.headers.get('x-real-ip') || 
+                     'unknown';
+    
+    // Check rate limit: max 5 payment attempts per 10 minutes per IP
+    const { data: rateLimitOk, error: rateLimitError } = await supabase
+      .rpc('check_rate_limit', { 
+        p_ip_address: clientIp, 
+        p_endpoint: 'yookassa-create-payment',
+        p_max_requests: 5,
+        p_window_minutes: 10
+      });
+
+    if (rateLimitError) {
+      console.error('Rate limit check error:', rateLimitError);
+    }
+
+    if (rateLimitOk === false) {
+      console.warn('Rate limit exceeded for IP:', clientIp);
+      return new Response(
+        JSON.stringify({ error: 'Too many requests. Please try again later.' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     if (!shopId || !secretKey) {
       console.error('Missing YooKassa credentials');
       return new Response(
@@ -30,14 +56,24 @@ Deno.serve(async (req) => {
 
     const { email, sku } = await req.json();
 
-    if (!email || !sku) {
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email) || email.length > 255) {
       return new Response(
-        JSON.stringify({ error: 'Email and SKU are required' }),
+        JSON.stringify({ error: 'Valid email is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('Creating payment for:', { email, sku });
+    // Validate SKU format
+    if (!sku || typeof sku !== 'string' || sku.length > 100) {
+      return new Response(
+        JSON.stringify({ error: 'Valid SKU is required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Creating payment for:', { email: email.substring(0, 3) + '***', sku, ip: clientIp });
 
     // Получаем информацию о продукте из базы данных
     const { data: product, error: productError } = await supabase
