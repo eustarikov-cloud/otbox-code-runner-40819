@@ -37,7 +37,9 @@ export default function Buy() {
         .eq("is_active", true);
 
       if (error) {
-        console.error("Error fetching products:", error);
+        if (import.meta.env.DEV) {
+          console.error("Error fetching products:", error);
+        }
         toast({
           title: "Ошибка",
           description: "Не удалось загрузить список продуктов",
@@ -96,7 +98,9 @@ export default function Buy() {
         throw new Error("Не получена ссылка на оплату");
       }
     } catch (error) {
-      console.error("Payment creation error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Payment creation error:", error);
+      }
       toast({
         title: "Ошибка создания платежа",
         description: "Проверьте email/товар и попробуйте снова",
