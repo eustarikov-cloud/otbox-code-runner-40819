@@ -8,3 +8,12 @@ verify_jwt = false
 
 [functions.resend-test]
 verify_jwt = false
+
+[functions.send-order-confirmation]
+verify_jwt = false
+
+[functions.send-payment-reminder]
+verify_jwt = false
+
+[functions.admin-send-email]
+verify_jwt = false
