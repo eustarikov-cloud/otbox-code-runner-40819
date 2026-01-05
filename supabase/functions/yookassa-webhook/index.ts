@@ -5,6 +5,39 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Verify payment status directly with YooKassa API
+async function verifyPaymentWithYooKassa(paymentId: string, shopId: string, secretKey: string): Promise<{ verified: boolean; payment: any }> {
+  try {
+    const credentials = btoa(`${shopId}:${secretKey}`);
+    const response = await fetch(`https://api.yookassa.ru/v3/payments/${paymentId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      console.error('YooKassa API error:', response.status, await response.text());
+      return { verified: false, payment: null };
+    }
+
+    const payment = await response.json();
+    console.log('YooKassa payment verification:', payment.id, 'status:', payment.status);
+    
+    // Verify that payment is actually succeeded
+    if (payment.status !== 'succeeded') {
+      console.error('Payment not succeeded:', payment.status);
+      return { verified: false, payment };
+    }
+
+    return { verified: true, payment };
+  } catch (error) {
+    console.error('Error verifying payment with YooKassa:', error);
+    return { verified: false, payment: null };
+  }
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -15,8 +48,16 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    const yookassaShopId = Deno.env.get('YOOKASSA_SHOP_ID');
+    const yookassaSecretKey = Deno.env.get('YOOKASSA_SECRET_KEY');
     const fromEmail = Deno.env.get('FROM_EMAIL') || 'OT-Box <no-reply@otbox.ru>';
     const downloadTtlMinutes = parseInt(Deno.env.get('DOWNLOAD_TTL_MIN') || '120');
+
+    // Check for required YooKassa credentials for verification
+    if (!yookassaShopId || !yookassaSecretKey) {
+      console.error('Missing YooKassa credentials for payment verification');
+      return new Response('Server configuration error', { status: 500 });
+    }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -30,18 +71,37 @@ Deno.serve(async (req) => {
       return new Response('OK', { status: 200 });
     }
 
-    const payment = event.object;
+    const webhookPayment = event.object;
+    const paymentId = webhookPayment.id;
+
+    if (!paymentId) {
+      console.error('Missing payment ID in webhook');
+      return new Response('Missing payment ID', { status: 400 });
+    }
+
+    // SECURITY: Verify payment status directly with YooKassa API
+    // This prevents forged webhook attacks where attackers send fake payment.succeeded events
+    console.log('Verifying payment with YooKassa API:', paymentId);
+    const { verified, payment } = await verifyPaymentWithYooKassa(paymentId, yookassaShopId, yookassaSecretKey);
+
+    if (!verified || !payment) {
+      console.error('Payment verification failed for:', paymentId);
+      return new Response('Payment verification failed', { status: 401 });
+    }
+
+    console.log('Payment verified successfully:', paymentId);
+
+    // Use verified payment data from YooKassa API (not from webhook)
     const email = payment.metadata?.email;
     const sku = payment.metadata?.sku;
-    const paymentId = payment.id;
     const amount = Number(payment.amount?.value || 0);
 
     if (!email || !sku) {
-      console.error('Missing metadata in payment:', paymentId);
+      console.error('Missing metadata in verified payment:', paymentId);
       return new Response('Missing metadata', { status: 200 });
     }
 
-    console.log('Processing payment:', paymentId, 'for', email);
+    console.log('Processing verified payment:', paymentId, 'for', email);
 
     // Получаем информацию о продукте
     const { data: product, error: productError } = await supabase
