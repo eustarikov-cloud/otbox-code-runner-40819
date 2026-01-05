@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { redirectToExternal } from "@/lib/redirectToExternal";
 import { z } from "zod";
 import { User } from "@supabase/supabase-js";
 import { Building2, Sparkles } from "lucide-react";
@@ -135,19 +136,8 @@ export const OrderForm = () => {
         description: "Перенаправляем на страницу оплаты...",
       });
 
-      // Redirect to YooKassa payment page
-      setTimeout(() => {
-        try {
-          if (window.top && window.top !== window) {
-            window.top.location.href = paymentData.url;
-          } else {
-            window.location.href = paymentData.url;
-          }
-        } catch (e) {
-          // If blocked, open in new window
-          window.open(paymentData.url, '_blank');
-        }
-      }, 1000);
+      // Redirect immediately (setTimeout often blocks navigation/popups, especially inside iframes)
+      redirectToExternal(paymentData.url);
 
     } catch (error: any) {
       if (error instanceof z.ZodError) {

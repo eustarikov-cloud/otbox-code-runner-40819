@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { redirectToExternal } from "@/lib/redirectToExternal";
 import { z } from "zod";
 
 const checkoutSchema = z.object({
@@ -97,17 +98,9 @@ export default function Checkout() {
         description: "Перенаправляем на страницу оплаты...",
       });
 
-      setTimeout(() => {
-        try {
-          if (window.top && window.top !== window) {
-            window.top.location.href = paymentData.url;
-          } else {
-            window.location.href = paymentData.url;
-          }
-        } catch (e) {
-          window.open(paymentData.url, "_blank");
-        }
-      }, 1000);
+      // Redirect immediately (setTimeout often breaks navigation in iframes / triggers popup blockers)
+      redirectToExternal(paymentData.url);
+
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Record<string, string> = {};
