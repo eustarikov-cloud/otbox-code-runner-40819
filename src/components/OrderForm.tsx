@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { isEmbeddedInIframe, redirectToExternal } from "@/lib/redirectToExternal";
+import { invokePublicFunction } from "@/lib/invokePublicFunction";
 import { z } from "zod";
 import { User } from "@supabase/supabase-js";
 import { Building2, Sparkles } from "lucide-react";
@@ -105,15 +106,14 @@ export const OrderForm = () => {
       }
 
       // Create payment in YooKassa
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-        'yookassa-create-payment',
-        {
-          body: {
-            email: validatedData.email,
-            sku: `${validatedData.package}-package`,
-          }
-        }
-      );
+      const { data: paymentData, error: paymentError } = await invokePublicFunction<{
+        payment_id?: string;
+        paymentId?: string;
+        url?: string;
+      }>("yookassa-create-payment", {
+        email: validatedData.email,
+        sku: `${validatedData.package}-package`,
+      });
 
       if (paymentError || !paymentData?.url) {
         throw new Error(paymentError?.message || 'Не удалось создать платеж');

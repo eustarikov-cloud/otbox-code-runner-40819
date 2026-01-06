@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { invokePublicFunction } from "@/lib/invokePublicFunction";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -69,13 +70,11 @@ export default function Buy() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke(
+      const { data, error } = await invokePublicFunction<{ url?: string }>(
         "yookassa-create-payment",
         {
-          body: {
-            email,
-            sku: selectedSku,
-          },
+          email,
+          sku: selectedSku,
         }
       );
 
