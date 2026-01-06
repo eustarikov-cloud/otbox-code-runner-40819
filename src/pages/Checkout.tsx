@@ -11,6 +11,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { isEmbeddedInIframe, redirectToExternal } from "@/lib/redirectToExternal";
+import { invokePublicFunction } from "@/lib/invokePublicFunction";
 import { z } from "zod";
 
 const checkoutSchema = z.object({
@@ -72,15 +73,14 @@ export default function Checkout() {
       }
 
       // Создаем платеж через YooKassa
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-        "yookassa-create-payment",
-        {
-          body: {
-            email: validatedData.email,
-            sku: items[0].sku, // Используем SKU первого товара
-          },
-        }
-      );
+      const { data: paymentData, error: paymentError } = await invokePublicFunction<{
+        payment_id?: string;
+        paymentId?: string;
+        url?: string;
+      }>("yookassa-create-payment", {
+        email: validatedData.email,
+        sku: items[0].sku, // Используем SKU первого товара
+      });
 
       if (paymentError || !paymentData?.url) {
         throw new Error(paymentError?.message || "Не удалось создать платеж");
