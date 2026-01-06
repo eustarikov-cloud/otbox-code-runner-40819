@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { redirectToExternal } from "@/lib/redirectToExternal";
+import { isEmbeddedInIframe, redirectToExternal } from "@/lib/redirectToExternal";
 import { z } from "zod";
 import { User } from "@supabase/supabase-js";
 import { Building2, Sparkles } from "lucide-react";
@@ -62,6 +62,18 @@ export const OrderForm = () => {
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // In Lovable preview the app runs inside an iframe; opening a tab synchronously
+    // prevents popup blockers when we later set the payment URL asynchronously.
+    let preOpenedWindow: Window | null = null;
+    try {
+      if (isEmbeddedInIframe()) {
+        preOpenedWindow = window.open("about:blank", "_blank", "noopener,noreferrer");
+      }
+    } catch {
+      // ignore
+    }
+
     setIsSubmitting(true);
     setErrors({});
 
@@ -136,10 +148,17 @@ export const OrderForm = () => {
         description: "Перенаправляем на страницу оплаты...",
       });
 
-      // Redirect immediately (setTimeout often blocks navigation/popups, especially inside iframes)
-      redirectToExternal(paymentData.url);
+      // Redirect (use pre-opened tab in iframe preview to avoid popup blockers)
+      redirectToExternal(paymentData.url, { preOpenedWindow });
 
     } catch (error: any) {
+      if (preOpenedWindow && !preOpenedWindow.closed) {
+        try {
+          preOpenedWindow.close();
+        } catch {
+          // ignore
+        }
+      }
       if (error instanceof z.ZodError) {
         const fieldErrors: Partial<Record<keyof OrderFormData, string>> = {};
         error.issues.forEach((issue) => {

@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { redirectToExternal } from "@/lib/redirectToExternal";
+import { isEmbeddedInIframe, redirectToExternal } from "@/lib/redirectToExternal";
 import { z } from "zod";
 
 const checkoutSchema = z.object({
@@ -34,6 +34,18 @@ export default function Checkout() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // In Lovable preview the app runs inside an iframe; opening a tab synchronously
+    // prevents popup blockers when we later set the payment URL asynchronously.
+    let preOpenedWindow: Window | null = null;
+    try {
+      if (isEmbeddedInIframe()) {
+        preOpenedWindow = window.open("about:blank", "_blank", "noopener,noreferrer");
+      }
+    } catch {
+      // ignore
+    }
+
     setLoading(true);
     setErrors({});
 
@@ -98,10 +110,17 @@ export default function Checkout() {
         description: "Перенаправляем на страницу оплаты...",
       });
 
-      // Redirect immediately (setTimeout often breaks navigation in iframes / triggers popup blockers)
-      redirectToExternal(paymentData.url);
+      // Redirect (use pre-opened tab in iframe preview to avoid popup blockers)
+      redirectToExternal(paymentData.url, { preOpenedWindow });
 
     } catch (error: any) {
+      if (preOpenedWindow && !preOpenedWindow.closed) {
+        try {
+          preOpenedWindow.close();
+        } catch {
+          // ignore
+        }
+      }
       if (error instanceof z.ZodError) {
         const fieldErrors: Record<string, string> = {};
         error.issues.forEach((issue) => {
