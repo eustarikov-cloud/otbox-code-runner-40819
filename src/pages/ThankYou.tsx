@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Mail, Download } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { invokePublicFunction } from "@/lib/invokePublicFunction";
 
 // Validate payment_id format (YooKassa format: alphanumeric with dashes, 20-50 chars)
 const isValidPaymentId = (id: string | null): id is string => {
@@ -19,22 +19,17 @@ export default function ThankYou() {
   const paymentId = searchParams.get("payment_id");
 
   useEffect(() => {
-    // Validate payment_id before using in query
     if (isValidPaymentId(paymentId)) {
-      const fetchOrder = async () => {
-        const { data } = await supabase
-          .from("orders")
-          .select("download_url")
-          .eq("payment_id", paymentId)
-          .eq("payment_status", "succeeded")
-          .single();
-
+      const fetchDownload = async () => {
+        const { data } = await invokePublicFunction<{ download_url: string | null }>(
+          "get-download-url",
+          { payment_id: paymentId }
+        );
         if (data?.download_url) {
           setDownloadUrl(data.download_url);
         }
       };
-
-      fetchOrder();
+      fetchDownload();
     }
   }, [paymentId]);
 

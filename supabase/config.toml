@@ -6,6 +6,9 @@ verify_jwt = false
 [functions.yookassa-webhook]
 verify_jwt = false
 
+[functions.get-download-url]
+verify_jwt = false
+
 [functions.resend-test]
 verify_jwt = false
 
