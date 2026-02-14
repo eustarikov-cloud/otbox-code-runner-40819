@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
+import { ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,6 +28,11 @@ export default function Checkout() {
     email: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+
+  const openPaymentUrl = useCallback(() => {
+    if (paymentUrl) window.open(paymentUrl, "_blank", "noopener,noreferrer");
+  }, [paymentUrl]);
 
   if (items.length === 0) {
     navigate("/catalog");
@@ -85,6 +91,7 @@ export default function Checkout() {
       }
 
       clearCart();
+      setPaymentUrl(paymentData.url);
       
       toast({
         title: "Заказ создан!",
@@ -181,6 +188,23 @@ export default function Checkout() {
                   {loading ? "Обработка..." : "Перейти к оплате"}
                 </Button>
               </form>
+
+              {paymentUrl && (
+                <div className="mt-6 p-4 rounded-lg bg-muted text-center space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Если страница оплаты не открылась автоматически:
+                  </p>
+                  <Button
+                    onClick={openPaymentUrl}
+                    variant="outline"
+                    size="lg"
+                    className="w-full"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Открыть страницу оплаты
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
