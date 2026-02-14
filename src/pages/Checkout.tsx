@@ -53,26 +53,7 @@ export default function Checkout() {
     try {
       const validatedData = checkoutSchema.parse(formData);
 
-      // Создаем заказ для каждого товара в корзине
-      for (const item of items) {
-        const { error: insertError } = await supabase.from("orders").insert({
-          name: "Не указано",
-          email: validatedData.email,
-          phone: "Не указан",
-          package: item.sku,
-          comment: null,
-          payment_amount: item.price_rub,
-          package_price: item.price_rub,
-          user_id: null,
-          status: "new",
-          payment_status: "pending",
-          product_id: item.id,
-        });
-
-        if (insertError) throw insertError;
-      }
-
-      // Создаем платеж через YooKassa
+      // Создаем платеж через YooKassa (заказ создаётся webhook-ом после успешной оплаты)
       const { data: paymentData, error: paymentError } = await invokePublicFunction<{
         payment_id?: string;
         paymentId?: string;
