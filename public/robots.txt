@@ -1,5 +1,5 @@
 # Robots.txt for OT-Box
-# https://otbox-kfahap.manus.space
+# https://otbox.ru
 
 User-agent: *
 Allow: /
@@ -11,7 +11,7 @@ Disallow: /buy
 Disallow: /thank-you
 
 # Sitemap location
-Sitemap: https://otbox-kfahap.manus.space/sitemap.xml
+Sitemap: https://otbox.ru/sitemap.xml
 
 # Crawl-delay for polite crawling
 User-agent: Yandex
