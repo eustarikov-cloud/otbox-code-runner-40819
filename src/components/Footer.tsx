@@ -68,7 +68,7 @@ export const Footer = () => {
         
         <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-sm text-muted-foreground">
-            © 2025 OT-Box. Все права защищены.
+            © 2026 OT-Box. Все права защищены.
           </div>
           <div className="text-xs text-muted-foreground">ИНН: 471303641804</div>
         </div>

@@ -67,7 +67,7 @@ export const Pricing = () => {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Готовые комплекты</h2>
           <p className="text-xl text-muted-foreground">
-            Выберите комплект для вашего типа организации. Все документы актуальны на 2025 год.
+            Выберите комплект для вашего типа организации. Все документы актуальны на 2026 год.
           </p>
         </div>
 

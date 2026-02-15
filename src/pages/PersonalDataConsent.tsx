@@ -98,7 +98,7 @@ const PersonalDataConsent = () => {
           </div>
 
           <p className="text-sm text-muted-foreground mt-8 text-center">
-            Дата последнего обновления: 11 ноября 2025 г.
+            Дата последнего обновления: 15 февраля 2026 г.
           </p>
         </article>
       </main>

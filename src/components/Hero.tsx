@@ -21,7 +21,7 @@ export const Hero = () => {
       
       <div className="container mx-auto px-4 py-32 relative z-10 text-center">
         <Badge className="mb-6 bg-primary/20 text-primary-foreground border-primary/30 px-4 py-2">
-          ✨ Актуально на 2025 год — соответствие ТК РФ
+          ✨ Актуально на 2026 год — соответствие ТК РФ
         </Badge>
         
         <h1 id="hero-heading" className="text-4xl md:text-6xl font-bold mb-6 text-white">
