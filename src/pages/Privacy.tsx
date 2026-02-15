@@ -89,7 +89,7 @@ const Privacy = () => {
           </section>
 
           <p className="text-sm text-muted-foreground mt-8 mb-8">
-            Дата последнего обновления: 2 декабря 2025 г.
+            Дата последнего обновления: 15 февраля 2026 г.
           </p>
 
           <div className="flex justify-center mt-12">

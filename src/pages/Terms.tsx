@@ -173,7 +173,7 @@ const Terms = () => {
           </section>
 
           <p className="text-sm text-muted-foreground mt-8">
-            Дата публикации: 19 октября 2025 г.
+            Дата публикации: 15 февраля 2026 г.
           </p>
         </article>
       </main>
