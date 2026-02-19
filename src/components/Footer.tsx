@@ -18,8 +18,8 @@ export const Footer = () => {
           <div>
             <h3 className="font-semibold mb-4">Навигация</h3>
             <nav className="flex flex-col gap-2">
-              <a href="/#catalog" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                Каталог
+              <a href="/#pricing" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                Комплекты
               </a>
               <a href="/#samples" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Образцы
@@ -54,7 +54,8 @@ export const Footer = () => {
           <div>
             <h3 className="font-semibold mb-4">Контакты</h3>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-              <p>Email: ot-box@mail.ru</p>
+              <p>Email: <a href="mailto:ot-box@mail.ru" className="hover:text-primary transition-colors">ot-box@mail.ru</a></p>
+              <p>Тел: <a href="tel:+79850707753" className="hover:text-primary transition-colors">+7 (985) 070-77-53</a></p>
               <p>Пн-Пт: 9:00 - 18:00 (МСК)</p>
             </div>
           </div>

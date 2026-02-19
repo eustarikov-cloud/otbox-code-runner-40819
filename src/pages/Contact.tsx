@@ -10,7 +10,15 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { usePageMeta } from "@/hooks/usePageMeta";
+
 const Contact = () => {
+  usePageMeta({
+    title: "Контакты — OT-Box",
+    description: "Свяжитесь с OT-Box: email, телефон, форма обратной связи. Поможем подобрать комплект документов по охране труда.",
+    canonical: "https://otbox.ru/contact",
+  });
+
   const {
     toast
   } = useToast();

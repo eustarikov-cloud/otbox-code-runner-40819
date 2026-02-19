@@ -22,9 +22,18 @@ export const StructuredData = () => {
       "description": "Профессиональные шаблоны документов по охране труда для офисов и салонов красоты",
       "url": window.location.origin,
       "logo": `${window.location.origin}/favicon.ico`,
+      "email": "ot-box@mail.ru",
+      "telephone": "+7-985-070-77-53",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Москва",
+        "addressCountry": "RU"
+      },
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "Customer Service",
+        "telephone": "+7-985-070-77-53",
+        "email": "ot-box@mail.ru",
         "availableLanguage": "Russian"
       }
     };

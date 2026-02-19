@@ -28,7 +28,7 @@ export const Header = () => {
           <span className="text-xl font-bold">OT-Box</span>
         </div>
         
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-6" aria-label="Основная навигация">
           <button onClick={() => scrollToSection('pricing')} className="text-sm hover:text-primary transition-colors">
             Комплекты
           </button>
