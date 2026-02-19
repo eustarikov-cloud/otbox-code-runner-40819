@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { ShoppingCart, Package, CheckCircle2 } from "lucide-react";
 
 interface Product {
@@ -23,6 +24,12 @@ export default function Catalog() {
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
   const { toast } = useToast();
+
+  usePageMeta({
+    title: "Каталог документов по охране труда — OT-Box",
+    description: "Каталог готовых комплектов документов по охране труда для офисов и салонов красоты. Соответствие ТК РФ 2026.",
+    canonical: "https://otbox.ru/catalog",
+  });
 
   useEffect(() => {
     const fetchProducts = async () => {

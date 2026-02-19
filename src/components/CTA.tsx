@@ -9,12 +9,12 @@ export const CTA = () => {
   };
 
   return (
-    <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
-      <h2 className="text-3xl font-bold text-gray-900 mb-3">
+    <section className="bg-secondary/30 py-12 px-6 rounded-xl text-center">
+      <h2 className="text-3xl font-bold text-foreground mb-3">
         Готовые шаблоны документов по охране труда
       </h2>
 
-      <p className="text-lg text-gray-600 mb-6">
+      <p className="text-lg text-muted-foreground mb-6">
         Скачайте комплект документов под вашу отрасль. 
         Заполните реквизиты — и закройте требования ГИТ.
       </p>
@@ -28,7 +28,7 @@ export const CTA = () => {
         Купить комплект документов
       </Button>
 
-      <p className="mt-4 text-sm text-gray-500">
+      <p className="mt-4 text-sm text-muted-foreground">
         Шаблоны документов для самостоятельного заполнения. 
         Мы не оказываем услуги специалиста по ОТ.
       </p>
