@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
+import { LampContainer } from "@/components/ui/lamp";
 import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
@@ -75,17 +76,18 @@ export default function Catalog() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <BackButton />
-      <main className="flex-1 container mx-auto px-4 py-24 mt-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">
+      <LampContainer className="!min-h-[350px] rounded-none">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-br from-slate-200 to-slate-400 bg-clip-text text-transparent">
               Каталог документов
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-slate-400">
               Выберите необходимый комплект документов
             </p>
           </div>
-
+        </LampContainer>
+      <main className="flex-1 container mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto">
           {loading ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">Загрузка каталога...</p>
