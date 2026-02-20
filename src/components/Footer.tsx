@@ -22,7 +22,7 @@ export const Footer = () => {
                 Комплекты
               </a>
               <a href="/#samples" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                Образцы
+                Что входит
               </a>
               <a href="/#how-it-works" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Как работает

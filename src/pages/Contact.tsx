@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { invokePublicFunction } from "@/lib/invokePublicFunction";
 
 const Contact = () => {
   usePageMeta({
@@ -19,31 +20,46 @@ const Contact = () => {
     canonical: "https://otbox.ru/contact",
   });
 
-  const {
-    toast
-  } = useToast();
-  const [formData, setFormData] = useState({
-    email: "",
-    message: ""
-  });
-  const handleSubmit = (e: React.FormEvent) => {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({ email: "", message: "" });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Сообщение отправлено!",
-      description: "Мы свяжемся с вами в ближайшее время."
-    });
-    setFormData({
-      email: "",
-      message: ""
-    });
+    setLoading(true);
+
+    try {
+      const { error } = await invokePublicFunction("send-contact-message", {
+        email: formData.email,
+        message: formData.message,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Сообщение отправлено!",
+        description: "Мы свяжемся с вами в ближайшее время.",
+      });
+      setFormData({ email: "", message: "" });
+    } catch {
+      toast({
+        title: "Ошибка отправки",
+        description: "Попробуйте позже или напишите на ot-box@mail.ru",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  return <div className="min-h-screen">
+
+  return (
+    <div className="min-h-screen">
       <Header />
       <BackButton />
       <main className="pt-24 pb-12">
@@ -61,16 +77,13 @@ const Contact = () => {
                   <Label htmlFor="email">Email *</Label>
                   <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required placeholder="Ваш email для ответа" className="mt-2" />
                 </div>
-                
                 <div>
                   <Label htmlFor="message">Сообщение *</Label>
                   <Textarea id="message" name="message" value={formData.message} onChange={handleChange} required placeholder="Опишите ваш вопрос" className="mt-2 min-h-[150px]" />
                 </div>
-                
-                <Button type="submit" size="lg" className="w-full">
-                  Отправить сообщение
+                <Button type="submit" size="lg" className="w-full" disabled={loading}>
+                  {loading ? "Отправка..." : "Отправить сообщение"}
                 </Button>
-                
                 <p className="text-xs text-muted-foreground text-center">
                   Мы собираем только ваш email и текст сообщения, чтобы ответить на запрос. Лишние персональные данные не запрашиваем в соответствии с 152‑ФЗ.
                 </p>
@@ -86,9 +99,7 @@ const Contact = () => {
                   <div>
                     <h3 className="font-semibold mb-2">Email</h3>
                     <p className="text-muted-foreground">ot-box@mail.ru</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Ответим в течение 24 часов
-                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">Ответим в течение 24 часов</p>
                   </div>
                 </div>
               </Card>
@@ -101,9 +112,7 @@ const Contact = () => {
                   <div>
                     <h3 className="font-semibold mb-2">Телефон</h3>
                     <p className="text-muted-foreground">+7 (985) 070-77-53</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Пн-Пт: 9:00 - 18:00 (МСК)
-                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">Пн-Пт: 9:00 - 18:00 (МСК)</p>
                   </div>
                 </div>
               </Card>
@@ -116,9 +125,7 @@ const Contact = () => {
                   <div>
                     <h3 className="font-semibold mb-2">Адрес</h3>
                     <p className="text-muted-foreground">Москва, Россия</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Работаем по всей России
-                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">Работаем по всей России</p>
                   </div>
                 </div>
               </Card>
@@ -137,6 +144,8 @@ const Contact = () => {
         </div>
       </main>
       <Footer />
-    </div>;
+    </div>
+  );
 };
+
 export default Contact;

@@ -1,11 +1,17 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 export const CTA = () => {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({
-      behavior: 'smooth'
-    });
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const goToPricing = () => {
+    if (location.pathname !== "/") {
+      navigate("/", { state: { scrollTo: "pricing" } });
+    } else {
+      const element = document.getElementById("pricing");
+      element?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -20,10 +26,10 @@ export const CTA = () => {
       </p>
 
       <Button 
-        onClick={() => scrollToSection('pricing')}
+        onClick={goToPricing}
         variant="gradient" 
         size="lg" 
-        className="hover:bg-[#9b87f5] transition-all duration-300 active:bg-[#8b77e5]"
+        className="hover:bg-primary/80 transition-all duration-300"
       >
         Купить комплект документов
       </Button>

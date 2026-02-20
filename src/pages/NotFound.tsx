@@ -1,22 +1,34 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { FileQuestion } from "lucide-react";
 
 const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+    console.error("404 Error:", location.pathname);
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-gray-600">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 underline hover:text-blue-700">
-          Return to Home
-        </a>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 flex items-center justify-center px-4">
+        <div className="text-center space-y-6 max-w-md">
+          <FileQuestion className="w-20 h-20 mx-auto text-muted-foreground" />
+          <h1 className="text-6xl font-bold text-primary">404</h1>
+          <p className="text-xl text-muted-foreground">Страница не найдена</p>
+          <p className="text-sm text-muted-foreground">
+            Возможно, страница была удалена или вы перешли по неверной ссылке.
+          </p>
+          <Button asChild size="lg">
+            <Link to="/">Вернуться на главную</Link>
+          </Button>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 };

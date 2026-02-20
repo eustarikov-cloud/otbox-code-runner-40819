@@ -6,14 +6,12 @@ interface CartItem {
   title: string;
   description?: string;
   price_rub: number;
-  quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, "quantity">) => void;
+  addItem: (item: CartItem) => boolean;
   removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -26,7 +24,16 @@ const CART_STORAGE_KEY = "ot-box-cart";
 const loadCartFromStorage = (): CartItem[] => {
   try {
     const stored = localStorage.getItem(CART_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    // Migrate old format: strip quantity field if present
+    return parsed.map((item: any) => ({
+      id: item.id,
+      sku: item.sku,
+      title: item.title,
+      description: item.description,
+      price_rub: item.price_rub,
+    }));
   } catch {
     return [];
   }
@@ -39,53 +46,27 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
-  const addItem = (item: Omit<CartItem, "quantity">) => {
-    setItems((prev) => {
-      const existing = prev.find((i) => i.sku === item.sku);
-      if (existing) {
-        return prev.map((i) =>
-          i.sku === item.sku ? { ...i, quantity: i.quantity + 1 } : i
-        );
-      }
-      return [...prev, { ...item, quantity: 1 }];
-    });
+  const addItem = (item: CartItem): boolean => {
+    const exists = items.some((i) => i.sku === item.sku);
+    if (exists) return false;
+    setItems((prev) => [...prev, item]);
+    return true;
   };
 
   const removeItem = (id: string) => {
     setItems((prev) => prev.filter((i) => i.id !== id));
   };
 
-  const updateQuantity = (id: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeItem(id);
-      return;
-    }
-    setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, quantity } : i))
-    );
-  };
-
   const clearCart = () => {
     setItems([]);
   };
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce(
-    (sum, item) => sum + item.price_rub * item.quantity,
-    0
-  );
+  const totalItems = items.length;
+  const totalPrice = items.reduce((sum, item) => sum + item.price_rub, 0);
 
   return (
     <CartContext.Provider
-      value={{
-        items,
-        addItem,
-        removeItem,
-        updateQuantity,
-        clearCart,
-        totalItems,
-        totalPrice,
-      }}
+      value={{ items, addItem, removeItem, clearCart, totalItems, totalPrice }}
     >
       {children}
     </CartContext.Provider>
