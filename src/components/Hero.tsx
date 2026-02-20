@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CanvasText } from "@/components/ui/canvas-text";
 import heroImage from "@/assets/hero-office.jpg";
 
 export const Hero = () => {
@@ -27,16 +26,7 @@ export const Hero = () => {
         
         <h1 id="hero-heading" className="text-4xl md:text-6xl font-bold mb-6 text-white">
           Документы по охране труда<br />
-          для{" "}
-          <CanvasText
-            text="офисов и салонов красоты"
-            className="text-4xl md:text-6xl font-bold"
-            colors={["hsl(262, 83%, 58%)", "hsl(282, 83%, 68%)", "#4ecdc4", "#45b7d1", "#ffeaa7"]}
-            backgroundClassName="bg-transparent"
-            animationDuration={6}
-            lineGap={8}
-            curveIntensity={50}
-          />
+          для офисов и салонов красоты
         </h1>
         
         <p className="text-xl md:text-2xl mb-12 text-white/90 max-w-3xl mx-auto">
