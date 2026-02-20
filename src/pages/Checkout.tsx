@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { isEmbeddedInIframe, redirectToExternal } from "@/lib/redirectToExternal";
 import { invokePublicFunction } from "@/lib/invokePublicFunction";
 import { z } from "zod";
@@ -55,7 +54,8 @@ export default function Checkout() {
     try {
       const validatedData = checkoutSchema.parse(formData);
 
-      // Передаём массив всех SKU из корзины
+      console.log("[Checkout] Creating payment for SKUs:", items.map((i) => i.sku));
+
       const { data: paymentData, error: paymentError } = await invokePublicFunction<{
         payment_id?: string;
         paymentId?: string;
@@ -66,27 +66,17 @@ export default function Checkout() {
       });
 
       if (paymentError || !paymentData?.url) {
+        console.error("[Checkout] Payment creation failed:", {
+          error: paymentError?.message,
+          skus: items.map((i) => i.sku),
+          totalPrice,
+        });
         throw new Error(paymentError?.message || "Не удалось создать платеж");
       }
 
-      // Отправляем подтверждение заказа
-      try {
-        await supabase.functions.invoke("send-order-confirmation", {
-          body: {
-            orderId: paymentData.paymentId || "unknown",
-            email: validatedData.email,
-            name: "Не указано",
-            packageName: items.map((i) => i.title).join(", "),
-            price: totalPrice,
-          },
-        });
-      } catch (emailError) {
-        if (import.meta.env.DEV) {
-          console.error("Failed to send confirmation email:", emailError);
-        }
-      }
+      console.log("[Checkout] Payment created:", paymentData.paymentId || paymentData.payment_id);
 
-      // НЕ очищаем корзину здесь — очистка происходит на /thank-you после подтверждения
+      // НЕ очищаем корзину — очистка на /thank-you после подтверждения
       setPaymentUrl(paymentData.url);
 
       toast({
@@ -112,6 +102,7 @@ export default function Checkout() {
           variant: "destructive",
         });
       } else {
+        console.error("[Checkout] Unexpected error:", error?.message || error);
         toast({
           title: "Ошибка",
           description: "Не удалось создать заказ. Попробуйте позже.",

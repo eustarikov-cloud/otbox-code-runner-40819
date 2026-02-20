@@ -2,10 +2,9 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-// Validate payment_id format (YooKassa format: alphanumeric with dashes, 20-50 chars)
 function isValidPaymentId(id: string | null): id is string {
   if (!id) return false;
   return /^[a-zA-Z0-9\-]{20,50}$/.test(id);
@@ -30,22 +29,30 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Fetch ALL orders for this payment (supports multi-product)
     const { data, error } = await supabase
       .from('orders')
-      .select('download_url')
+      .select('download_url, package')
       .eq('payment_id', payment_id)
-      .eq('payment_status', 'succeeded')
-      .single();
+      .eq('payment_status', 'succeeded');
 
-    if (error || !data?.download_url) {
+    if (error || !data || data.length === 0) {
       return new Response(
-        JSON.stringify({ download_url: null }),
+        JSON.stringify({ download_url: null, downloads: [] }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    // Return both legacy single URL and new array format
+    const downloads = data
+      .filter((d: any) => d.download_url)
+      .map((d: any) => ({ url: d.download_url, name: d.package }));
+
     return new Response(
-      JSON.stringify({ download_url: data.download_url }),
+      JSON.stringify({
+        download_url: data[0]?.download_url || null,
+        downloads,
+      }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
