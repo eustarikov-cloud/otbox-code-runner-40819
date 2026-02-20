@@ -20,13 +20,11 @@ const checkoutSchema = z.object({
 });
 
 export default function Checkout() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice } = useCart();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-  });
+  const [formData, setFormData] = useState({ email: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
@@ -42,8 +40,6 @@ export default function Checkout() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // In Lovable preview the app runs inside an iframe; opening a tab synchronously
-    // prevents popup blockers when we later set the payment URL asynchronously.
     let preOpenedWindow: Window | null = null;
     try {
       if (isEmbeddedInIframe()) {
@@ -59,14 +55,14 @@ export default function Checkout() {
     try {
       const validatedData = checkoutSchema.parse(formData);
 
-      // Создаем платеж через YooKassa (заказ создаётся webhook-ом после успешной оплаты)
+      // Передаём массив всех SKU из корзины
       const { data: paymentData, error: paymentError } = await invokePublicFunction<{
         payment_id?: string;
         paymentId?: string;
         url?: string;
       }>("yookassa-create-payment", {
         email: validatedData.email,
-        sku: items[0].sku, // Используем SKU первого товара
+        skus: items.map((i) => i.sku),
       });
 
       if (paymentError || !paymentData?.url) {
@@ -90,24 +86,18 @@ export default function Checkout() {
         }
       }
 
-      clearCart();
+      // НЕ очищаем корзину здесь — очистка происходит на /thank-you после подтверждения
       setPaymentUrl(paymentData.url);
-      
+
       toast({
         title: "Заказ создан!",
         description: "Перенаправляем на страницу оплаты...",
       });
 
-      // Redirect (use pre-opened tab in iframe preview to avoid popup blockers)
       redirectToExternal(paymentData.url, { preOpenedWindow });
-
     } catch (error: any) {
       if (preOpenedWindow && !preOpenedWindow.closed) {
-        try {
-          preOpenedWindow.close();
-        } catch {
-          // ignore
-        }
+        try { preOpenedWindow.close(); } catch { /* ignore */ }
       }
       if (error instanceof z.ZodError) {
         const fieldErrors: Record<string, string> = {};
@@ -168,7 +158,6 @@ export default function Checkout() {
                   <p className="text-center text-muted-foreground">
                     Укажите вашу электронную почту для получения доступа к инструкциям
                   </p>
-                  
                   <div className="space-y-2">
                     <Label htmlFor="email">Ваша электронная почта</Label>
                     <Input
@@ -194,12 +183,7 @@ export default function Checkout() {
                   <p className="text-sm text-muted-foreground">
                     Если страница оплаты не открылась автоматически:
                   </p>
-                  <Button
-                    onClick={openPaymentUrl}
-                    variant="outline"
-                    size="lg"
-                    className="w-full"
-                  >
+                  <Button onClick={openPaymentUrl} variant="outline" size="lg" className="w-full">
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Открыть страницу оплаты
                   </Button>

@@ -5,18 +5,15 @@ import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
-import { Trash2, ShoppingBag, ArrowRight, Plus, Minus } from "lucide-react";
+import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 
 export default function Cart() {
-  const {
-    items,
-    removeItem,
-    updateQuantity,
-    totalPrice
-  } = useCart();
+  const { items, removeItem, totalPrice } = useCart();
   const navigate = useNavigate();
+
   if (items.length === 0) {
-    return <div className="min-h-screen flex flex-col">
+    return (
+      <div className="min-h-screen flex flex-col">
         <Header />
         <BackButton />
         <main className="flex-1 flex items-center justify-center px-4">
@@ -32,9 +29,12 @@ export default function Cart() {
           </div>
         </main>
         <Footer />
-      </div>;
+      </div>
+    );
   }
-  return <div className="min-h-screen flex flex-col">
+
+  return (
+    <div className="min-h-screen flex flex-col">
       <Header />
       <BackButton />
       <main className="flex-1 container mx-auto px-4 py-16">
@@ -42,7 +42,8 @@ export default function Cart() {
           <h1 className="text-4xl font-bold mb-8">Корзина</h1>
 
           <div className="space-y-4 mb-8">
-            {items.map(item => <Card key={item.id}>
+            {items.map((item) => (
+              <Card key={item.id}>
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
@@ -54,38 +55,23 @@ export default function Cart() {
                       )}
                     </div>
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        >
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <span className="w-8 text-center font-medium">{item.quantity}</span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
                       <div className="text-right min-w-[100px]">
-                        <p className="text-xl font-bold">{(item.price_rub * item.quantity).toLocaleString()} ₽</p>
-                        {item.quantity > 1 && (
-                          <p className="text-xs text-muted-foreground">{item.price_rub.toLocaleString()} ₽ / шт.</p>
-                        )}
+                        <p className="text-xl font-bold">{item.price_rub.toLocaleString()} ₽</p>
                       </div>
-                      <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeItem(item.id)}
+                        className="text-destructive hover:text-destructive"
+                        aria-label={`Удалить ${item.title}`}
+                      >
                         <Trash2 className="w-5 h-5" />
                       </Button>
                     </div>
                   </div>
                 </CardContent>
-              </Card>)}
+              </Card>
+            ))}
           </div>
 
           <Card className="bg-muted/50">
@@ -102,7 +88,6 @@ export default function Cart() {
               Перейти к оплате
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-
             <div className="text-center">
               <Link to="/catalog" className="text-sm text-muted-foreground hover:text-primary underline">
                 Продолжить покупки
@@ -112,5 +97,6 @@ export default function Cart() {
         </div>
       </main>
       <Footer />
-    </div>;
+    </div>
+  );
 }

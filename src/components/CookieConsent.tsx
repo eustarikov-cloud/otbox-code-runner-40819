@@ -70,6 +70,15 @@ export const CookieConsent = () => {
     saveConsent(preferences);
   };
 
+  useEffect(() => {
+    if (isVisible) {
+      document.body.style.paddingBottom = '5rem';
+    } else {
+      document.body.style.paddingBottom = '';
+    }
+    return () => { document.body.style.paddingBottom = ''; };
+  }, [isVisible]);
+
   if (!isVisible) return null;
 
   return (
