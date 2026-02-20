@@ -12,9 +12,14 @@ const isValidPaymentId = (id: string | null): id is string => {
   return /^[a-zA-Z0-9\-]{20,50}$/.test(id);
 };
 
+interface DownloadItem {
+  url: string;
+  name: string;
+}
+
 export default function ThankYou() {
   const [searchParams] = useSearchParams();
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [downloads, setDownloads] = useState<DownloadItem[]>([]);
   const { clearCart } = useCart();
   const paymentId = searchParams.get("payment_id");
   const isValid = isValidPaymentId(paymentId);
@@ -23,12 +28,15 @@ export default function ThankYou() {
     if (isValid) {
       clearCart();
       const fetchDownload = async () => {
-        const { data } = await invokePublicFunction<{ download_url: string | null }>(
-          "get-download-url",
-          { payment_id: paymentId }
-        );
-        if (data?.download_url) {
-          setDownloadUrl(data.download_url);
+        const { data } = await invokePublicFunction<{
+          download_url: string | null;
+          downloads?: DownloadItem[];
+        }>("get-download-url", { payment_id: paymentId });
+
+        if (data?.downloads && data.downloads.length > 0) {
+          setDownloads(data.downloads);
+        } else if (data?.download_url) {
+          setDownloads([{ url: data.download_url, name: "Документ" }]);
         }
       };
       fetchDownload();
@@ -46,13 +54,17 @@ export default function ThankYou() {
               <CheckCircle className="w-16 h-16 mx-auto text-primary" />
               <h1 className="text-4xl font-bold">Спасибо за покупку!</h1>
 
-              {downloadUrl && (
-                <Button asChild size="lg" className="w-full">
-                  <a href={downloadUrl} target="_blank" rel="noopener noreferrer">
-                    <Download className="w-5 h-5 mr-2" />
-                    Скачать файл
-                  </a>
-                </Button>
+              {downloads.length > 0 && (
+                <div className="space-y-3">
+                  {downloads.map((dl, idx) => (
+                    <Button key={idx} asChild size="lg" className="w-full">
+                      <a href={dl.url} target="_blank" rel="noopener noreferrer">
+                        <Download className="w-5 h-5 mr-2" />
+                        Скачать: {dl.name}
+                      </a>
+                    </Button>
+                  ))}
+                </div>
               )}
 
               <div className="flex items-center justify-center gap-2 text-muted-foreground">
